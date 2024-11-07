@@ -62,6 +62,13 @@ class MonthsState extends State<Months> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedMonth == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
                 ),
                 child: Text(
                   monthsList[index],
