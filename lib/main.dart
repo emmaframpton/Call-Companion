@@ -86,3 +86,72 @@ class MonthsState extends State<Months> {
     );
   }
 }
+
+class Dates extends StatefulWidget {
+  final String title; // Title field, must be initialized
+
+  const Dates({super.key, required this.title});
+
+  @override
+  MonthsState createState() => MonthsState();
+}
+
+class DatesState extends State<Months> {
+  int? selectedDate;
+  final datesList = [
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 
+    "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", 
+    "24", "25", "26", "27", "28", "29", "30", "31" 
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 31, // 31 days
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDate = index;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedDate == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
+                ),
+                child: Text(
+                  datesList[index],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
