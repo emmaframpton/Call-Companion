@@ -59,6 +59,18 @@ class MonthsState extends State<Months> {
                   setState(() {
                     selectedMonth = index;
                   });
+                  if(selectedMonth != null){
+                    Navigator.push( // navigate to Dates selection
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Dates(
+                        title: "${monthsList[selectedMonth!]}.",
+                        selectedMonth: selectedMonth,
+                      ),
+                    ),
+                  );
+                  }
+                
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedMonth == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
@@ -89,15 +101,16 @@ class MonthsState extends State<Months> {
 
 class Dates extends StatefulWidget {
   final String title; // Title field, must be initialized
-
-  const Dates({super.key, required this.title});
+  final int? selectedMonth;
+  const Dates({super.key, required this.title, required this.selectedMonth});
 
   @override
-  MonthsState createState() => MonthsState();
+  DatesState createState() => DatesState();
 }
 
-class DatesState extends State<Months> {
+class DatesState extends State<Dates> {
   int? selectedDate;
+  int? selectedMonth; 
   final datesList = [
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 
     "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", 
