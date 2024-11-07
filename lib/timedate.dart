@@ -19,3 +19,23 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class Months extends StatefulWidget {
+  final String title; // Title field, must be initialized
+
+  const Months({super.key, required this.title});
+
+  @override
+  MonthsState createState() => MonthsState();
+}
+
+class MonthsState extends State<Months> {
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title), 
+        ),
+    );
+  }
+}
