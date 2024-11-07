@@ -30,6 +30,8 @@ class Months extends StatefulWidget {
 }
 
 class MonthsState extends State<Months> {
+  int? selectedMonth;
+  final monthsList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   @override
   Widget build(BuildContext context){
     return Scaffold(
