@@ -38,6 +38,11 @@ class MonthsState extends State<Months> {
       appBar: AppBar(
         title: Text(widget.title), 
         ),
+        body: Center(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.70 , // 70% of the screen's width
+            height: MediaQuery.of(context).size.height * 0.70) ,
+          )
     );
   }
 }
