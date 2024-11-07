@@ -31,36 +31,48 @@ class Months extends StatefulWidget {
 
 class MonthsState extends State<Months> {
   int? selectedMonth;
-  final monthsList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  final monthsList = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title), 
-        ),
-        body: Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.70 , // 70% of the screen's width
-            height: MediaQuery.of(context).size.height * 0.70) ,
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 2.0,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              childAspectRatio: 2.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 12, // 12 months
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedMonth = index;
+                  });
+                },
+                child: Text(
+                  monthsList[index],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                itemCount: 12, // 12 months
-                itemBuilder: (context, index) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedMonth = index;
-                      });
-                    }, 
-                    child: child)
-                }
-            )
-          )
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
