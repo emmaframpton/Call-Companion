@@ -50,7 +50,16 @@ class MonthsState extends State<Months> {
                 mainAxisSpacing: 10
                 ),
                 itemCount: 12, // 12 months
-            ,)
+                itemBuilder: (context, index) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedMonth = index;
+                      });
+                    }, 
+                    child: child)
+                }
+            )
           )
     );
   }
