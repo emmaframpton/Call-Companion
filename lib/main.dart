@@ -60,6 +60,9 @@ class MonthsState extends State<Months> {
                     selectedMonth = index;
                   });
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedMonth == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                ),
                 child: Text(
                   monthsList[index],
                   style: const TextStyle(
