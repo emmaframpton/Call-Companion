@@ -42,6 +42,15 @@ class MonthsState extends State<Months> {
           child: Container(
             width: MediaQuery.of(context).size.width * 0.70 , // 70% of the screen's width
             height: MediaQuery.of(context).size.height * 0.70) ,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 2.0,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10
+                ),
+                itemCount: 12, // 12 months
+            ,)
           )
     );
   }
