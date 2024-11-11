@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+<<<<<<< HEAD
   const MyApp({super.key});
 
   @override
@@ -16,10 +17,21 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Months(title: "Months"),
+=======
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Event Manager',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: EventListPage(),
+>>>>>>> 04a3974768f4ba93266319c1460b32e35d1c05f1
     );
   }
 }
 
+<<<<<<< HEAD
 class Months extends StatefulWidget {
   final String title; // Title field, must be initialized
 
@@ -34,11 +46,33 @@ class MonthsState extends State<Months> {
   final monthsList = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
+=======
+class EventListPage extends StatefulWidget {
+  @override
+  _EventListPageState createState() => _EventListPageState();
+}
+
+class _EventListPageState extends State<EventListPage> {
+  List<String> events = []; // Stores event descriptions
+
+  void addEvent(String event) {
+    setState(() {
+      events.add(event);
+    });
+  }
+
+  void editEvent(int index, String newEvent) {
+    setState(() {
+      events[index] = newEvent;
+    });
+  }
+>>>>>>> 04a3974768f4ba93266319c1460b32e35d1c05f1
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: Text(widget.title),
       ),
       body: Center(
@@ -93,12 +127,109 @@ class MonthsState extends State<Months> {
               );
             },
           ),
+=======
+        title: Text('Event List'),
+      ),
+      body: ListView.builder(
+        itemCount: events.length + 1, // extra for +
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // the + rectangle
+            return InkWell(
+              onTap: () async {
+                final newEvent = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewEventPage(),
+                  ),
+                );
+                if (newEvent != null) {
+                  addEvent(newEvent);
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.all(8.0),
+                height: 60,
+                color: Colors.grey[300],
+                child: Center(
+                  child: Icon(Icons.add, color: Colors.black, size: 32),
+                ),
+              ),
+            );
+          } else {
+            // List of events with updated color and border
+            final eventIndex = index - 1;
+            return InkWell(
+              onTap: () async {
+                final editedEvent = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditEventPage(
+                      event: events[eventIndex],
+                    ),
+                  ),
+                );
+                if (editedEvent != null) {
+                  editEvent(eventIndex, editedEvent);
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.all(8.0),
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Color(0xFFB57BD5), // Rectangle color
+                  border: Border.all(
+                    color: Color(0xFF560A7E), // Border color
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Center(
+                  child: Text(
+                    events[eventIndex],
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class NewEventPage extends StatelessWidget {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('New Event')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(labelText: 'Event Name'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text('Add Event'),
+            ),
+          ],
+>>>>>>> 04a3974768f4ba93266319c1460b32e35d1c05f1
         ),
       ),
     );
   }
 }
 
+<<<<<<< HEAD
 class Dates extends StatefulWidget {
   final String title; // Title field, must be initialized
   final int? selectedMonth;
@@ -120,10 +251,16 @@ class DatesState extends State<Dates> {
     "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", 
     "24", "25", "26", "27", "28", "29", "30", "31" 
   ];
+=======
+class EditEventPage extends StatelessWidget {
+  final TextEditingController controller;
+  EditEventPage({required String event}) : controller = TextEditingController(text: event);
+>>>>>>> 04a3974768f4ba93266319c1460b32e35d1c05f1
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -167,6 +304,25 @@ class DatesState extends State<Dates> {
               );
             },
           ),
+=======
+      appBar: AppBar(title: Text('Edit Event')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(labelText: 'Edit Event Name'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text('Save Changes'),
+            ),
+          ],
+>>>>>>> 04a3974768f4ba93266319c1460b32e35d1c05f1
         ),
       ),
     );
