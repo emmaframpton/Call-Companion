@@ -49,8 +49,8 @@ class MonthsState extends State<Months> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               childAspectRatio: 2.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
             ),
             itemCount: 12, // 12 months
             itemBuilder: (context, index) {
@@ -111,6 +111,10 @@ class Dates extends StatefulWidget {
 class DatesState extends State<Dates> {
   int? selectedDate;
   int? selectedMonth; 
+  //List<String> datesList;
+  //if selectedMonth! == 1 {
+
+  
   final datesList = [
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 
     "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", 
@@ -125,7 +129,7 @@ class DatesState extends State<Dates> {
       ),
       body: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          width: MediaQuery.of(context).size.width * 0.80, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -156,7 +160,7 @@ class DatesState extends State<Dates> {
                   datesList[index],
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 30,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
