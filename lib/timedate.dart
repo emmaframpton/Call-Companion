@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Months(title: "Months"),
+      home: Months(title: "Months"),
     );
   }
 }
@@ -30,13 +32,22 @@ class Months extends StatefulWidget {
 }
 
 class MonthsState extends State<Months> {
-  int? selectedMonth;
+  String? selectedMonth;
   final monthsList = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
+  
   @override
   Widget build(BuildContext context) {
+  int numColumns = 3;
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 350) {
+    numColumns = 2;
+  } else if (screenWidth > 600) {
+    numColumns = 4;
+  }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -46,8 +57,8 @@ class MonthsState extends State<Months> {
           width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
               childAspectRatio: 2.0,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
@@ -56,16 +67,16 @@ class MonthsState extends State<Months> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    selectedMonth = index;
-                  });
+                  selectedMonth = monthsList[index];
+
                   if(selectedMonth != null){
                     Navigator.push( // navigate to Dates selection
                     context,
                     MaterialPageRoute(
                       builder: (context) => Dates(
-                        title: "${monthsList[selectedMonth!]}.",
+                        title: "$selectedMonth.",
                         selectedMonth: selectedMonth,
+
                       ),
                     ),
                   );
@@ -101,7 +112,7 @@ class MonthsState extends State<Months> {
 
 class Dates extends StatefulWidget {
   final String title; // Title field, must be initialized
-  final int? selectedMonth;
+  final String? selectedMonth;
   const Dates({super.key, required this.title, required this.selectedMonth});
 
   @override
@@ -110,10 +121,7 @@ class Dates extends StatefulWidget {
 
 class DatesState extends State<Dates> {
   int? selectedDate;
-  int? selectedMonth; 
-  //List<String> datesList;
-  //if selectedMonth! == 1 {
-
+  String? selectedMonth; 
   
   final datesList = [
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 
@@ -123,6 +131,15 @@ class DatesState extends State<Dates> {
 
   @override
   Widget build(BuildContext context) {
+    int numColumns = 7;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 600){
+      numColumns = 4;
+    } else if (screenWidth > 800) {
+      numColumns = 7;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -132,8 +149,8 @@ class DatesState extends State<Dates> {
           width: MediaQuery.of(context).size.width * 0.80, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
               childAspectRatio: 1.0,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
@@ -142,9 +159,21 @@ class DatesState extends State<Dates> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    selectedDate = index;
-                  });
+                  selectedDate = index;
+                
+                  if(selectedDate != null){
+                    Navigator.push( // navigate to Dates selection
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Hours(
+                        title: "$selectedDate,",
+                        selectedMonth: selectedMonth,
+                        selectedDate: selectedDate,
+                      ),
+                    ),
+                  );
+                  }
+                
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedDate == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
@@ -158,6 +187,90 @@ class DatesState extends State<Dates> {
                 ),
                 child: Text(
                   datesList[index],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Hours extends StatefulWidget {
+  final String title; // Title field, must be initialized
+  final String? selectedMonth;
+  final int? selectedDate;
+  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate});
+
+  @override
+  HoursState createState() => HoursState();
+}
+
+class HoursState extends State<Hours> {
+  String? selectedMonth;
+  int? selectedDate;
+  int? selectedHour; 
+  
+  final hoursList = [
+    "1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:", "9:", "10:", "11:", "12:", 
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    int numColumns = 3;
+    double screenWidth = MediaQuery.of(context).size.width;
+    
+log('Selected Month: $selectedMonth');
+log('Selected Date: $selectedDate');
+log('Selected Hour: $selectedHour');
+
+    if (screenWidth < 350) {
+      numColumns = 2;
+    } else if (screenWidth > 600) {
+      numColumns = 4;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 12, // 12 hours
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedHour = index;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedHour == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
+                ),
+                child: Text(
+                  hoursList[index],
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 36,
