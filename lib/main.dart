@@ -419,8 +419,8 @@ class AMPMState extends State<AMPM> {
   String? selectedMinute;
   String? selectedAMPM;
   
-  final minutesList = [
-    ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
+  final amPMList = [
+    "AM", "PM" 
   ];
 
   @override
@@ -440,6 +440,7 @@ class AMPMState extends State<AMPM> {
     selectedMonth = widget.selectedMonth;
     selectedDate = widget.selectedDate;
     selectedHour = widget.selectedHour;
+    selectedHour = widget.selectedMinute;
   }
 
     return Scaffold(
@@ -457,16 +458,16 @@ class AMPMState extends State<AMPM> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: 12, // 12 minutes
+            itemCount: 2, 
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    selectedMinute = minutesList[index];
+                    selectedMinute = amPMList[index];
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedMinute == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  backgroundColor: selectedAMPM == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
@@ -476,7 +477,7 @@ class AMPMState extends State<AMPM> {
                   )
                 ),
                 child: Text(
-                  minutesList[index],
+                  amPMList[index],
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 36,
