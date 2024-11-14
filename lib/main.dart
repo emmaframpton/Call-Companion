@@ -369,9 +369,22 @@ class MinutesState extends State<Minutes> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    selectedMinute = minutesList[index];
-                  });
+                  selectedMinute = minutesList[index]; 
+                  
+                  if (selectedMinute != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AMPM(
+                          title: "$selectedMonth $selectedDate, $selectedHour:$selectedMinute",
+                          selectedMonth: selectedMonth,
+                          selectedDate: selectedDate,
+                          selectedHour: selectedHour,
+                          selectedMinute: selectedMinute,
+                        ),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedMinute == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
@@ -405,8 +418,8 @@ class AMPM extends StatefulWidget {
   final String? selectedMonth;
   final int? selectedDate;
   final int? selectedHour;
-  final int? selectedMinute;
-  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required selectedMinute, String? selectedAMPM});
+  final String? selectedMinute;
+  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, String? selectedAMPM});
 
   @override
   AMPMState createState() => AMPMState();
@@ -440,7 +453,7 @@ class AMPMState extends State<AMPM> {
     selectedMonth = widget.selectedMonth;
     selectedDate = widget.selectedDate;
     selectedHour = widget.selectedHour;
-    selectedHour = widget.selectedMinute;
+    selectedMinute = widget.selectedMinute;
   }
 
     return Scaffold(
