@@ -273,7 +273,7 @@ class HoursState extends State<Hours> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MinutesAMPM(
+                        builder: (context) => Minutes(
                           title: "$selectedMonth $selectedDate, $selectedHour:",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
@@ -310,18 +310,109 @@ class HoursState extends State<Hours> {
   }
 }
 
-class MinutesAMPM extends StatefulWidget {
+class Minutes extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
   final int? selectedDate;
   final int? selectedHour;
-  const MinutesAMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute, int? selectedAMPM});
+  const Minutes({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute});
 
   @override
-  MinutesAMPMState createState() => MinutesAMPMState();
+  MinutesState createState() => MinutesState();
 }
 
-class MinutesAMPMState extends State<MinutesAMPM> {
+class MinutesState extends State<Minutes> {
+  String? selectedMonth;
+  int? selectedDate;
+  int? selectedHour; 
+  String? selectedMinute;
+  
+  final minutesList = [
+    ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    int numColumns = 3;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 350) {
+      numColumns = 2;
+    } else if (screenWidth > 600) {
+      numColumns = 4;
+    }
+
+    @override
+    void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedDate = widget.selectedDate;
+    selectedHour = widget.selectedHour;
+  }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 12, // 12 minutes
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedMinute = minutesList[index];
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedMinute == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
+                ),
+                child: Text(
+                  minutesList[index],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AMPM extends StatefulWidget {
+  final String title; // Title field, must be initialized
+  final String? selectedMonth;
+  final int? selectedDate;
+  final int? selectedHour;
+  final int? selectedMinute;
+  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required selectedMinute, String? selectedAMPM});
+
+  @override
+  AMPMState createState() => AMPMState();
+}
+
+class AMPMState extends State<AMPM> {
   String? selectedMonth;
   int? selectedDate;
   int? selectedHour; 
@@ -330,10 +421,6 @@ class MinutesAMPMState extends State<MinutesAMPM> {
   
   final minutesList = [
     ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
-  ];
-
-  final AMPM = [
-    "AM", "PM"
   ];
 
   @override
