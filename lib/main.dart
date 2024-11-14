@@ -231,6 +231,13 @@ class HoursState extends State<Hours> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedDate = widget.selectedDate;
+  }
+
+  @override
   Widget build(BuildContext context) {
     int numColumns = 3;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -267,7 +274,7 @@ class HoursState extends State<Hours> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MinutesAMPM(
-                          title: "$selectedMonth $selectedDate, $selectedHour :",
+                          title: "$selectedMonth $selectedDate, $selectedHour:",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
@@ -339,6 +346,14 @@ class MinutesAMPMState extends State<MinutesAMPM> {
     } else if (screenWidth > 600) {
       numColumns = 4;
     }
+
+    @override
+    void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedDate = widget.selectedDate;
+    selectedHour = widget.selectedHour;
+  }
 
     return Scaffold(
       appBar: AppBar(
