@@ -215,7 +215,7 @@ class Hours extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
   final int? selectedDate;
-  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate});
+  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate, int? selectedHour});
 
   @override
   HoursState createState() => HoursState();
@@ -227,17 +227,13 @@ class HoursState extends State<Hours> {
   int? selectedHour; 
   
   final hoursList = [
-    "1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:", "9:", "10:", "11:", "12:", 
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
   ];
 
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
     double screenWidth = MediaQuery.of(context).size.width;
-    
-log('Selected Month: $selectedMonth');
-log('Selected Date: $selectedDate');
-log('Selected Hour: $selectedHour');
 
     if (screenWidth < 350) {
       numColumns = 2;
@@ -264,9 +260,21 @@ log('Selected Hour: $selectedHour');
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    selectedHour = index;
-                  });
+                  selectedHour = index + 1; 
+                  
+                  if (selectedHour != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MinutesAMPM(
+                          title: "$selectedMonth $selectedDate, $selectedHour :",
+                          selectedMonth: selectedMonth,
+                          selectedDate: selectedDate,
+                          selectedHour: selectedHour,
+                        ),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedHour == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
@@ -279,7 +287,94 @@ log('Selected Hour: $selectedHour');
                   )
                 ),
                 child: Text(
-                  hoursList[index],
+                  "${hoursList[index].toString()}:",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MinutesAMPM extends StatefulWidget {
+  final String title; // Title field, must be initialized
+  final String? selectedMonth;
+  final int? selectedDate;
+  final int? selectedHour;
+  const MinutesAMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute, int? selectedAMPM});
+
+  @override
+  MinutesAMPMState createState() => MinutesAMPMState();
+}
+
+class MinutesAMPMState extends State<MinutesAMPM> {
+  String? selectedMonth;
+  int? selectedDate;
+  int? selectedHour; 
+  String? selectedMinute;
+  String? selectedAMPM;
+  
+  final minutesList = [
+    ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
+  ];
+
+  final AMPM = [
+    "AM", "PM"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    int numColumns = 3;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 350) {
+      numColumns = 2;
+    } else if (screenWidth > 600) {
+      numColumns = 4;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 12, // 12 minutes
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedMinute = minutesList[index];
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedMinute == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
+                ),
+                child: Text(
+                  minutesList[index],
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 36,
