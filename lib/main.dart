@@ -74,7 +74,7 @@ class MonthsState extends State<Months> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Dates(
-                          title: "$selectedMonth", //
+                          title: "$selectedMonth _", //
                           selectedMonth: selectedMonth,
                         ),
                       ),
@@ -173,7 +173,7 @@ class DatesState extends State<Dates> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Hours(
-                          title: "$selectedMonth $selectedDate",
+                          title: "$selectedMonth $selectedDate, _:_",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                         ),
@@ -274,7 +274,7 @@ class HoursState extends State<Hours> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Minutes(
-                          title: "$selectedMonth $selectedDate, $selectedHour:",
+                          title: "$selectedMonth $selectedDate, $selectedHour:_",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
@@ -376,7 +376,7 @@ class MinutesState extends State<Minutes> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AMPM(
-                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute",
+                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
@@ -429,7 +429,7 @@ class AMPMState extends State<AMPM> {
   String? selectedMonth;
   int? selectedDate;
   int? selectedHour; 
-  String? selectedMinute;
+  String? selectedMinute; 
   String? selectedAMPM;
   
     @override
@@ -439,6 +439,116 @@ class AMPMState extends State<AMPM> {
     selectedDate = widget.selectedDate;
     selectedHour = widget.selectedHour;
     selectedMinute = widget.selectedMinute;
+  }
+  final amPMList = [
+    "AM", "PM" 
+  ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    int numColumns = 3;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 350) {
+      numColumns = 2;
+    } else if (screenWidth > 600) {
+      numColumns = 4;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: numColumns,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: 2, 
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  selectedAMPM = amPMList[index]; 
+                  
+                  if (selectedMinute != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ConfirmDate(
+                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
+                          selectedMonth: selectedMonth,
+                          selectedDate: selectedDate,
+                          selectedHour: selectedHour,
+                          selectedMinute: selectedMinute,
+                          selectedAMPM: selectedAMPM,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedAMPM == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                      )
+                  )
+                ),
+                child: Text(
+                  amPMList[index],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmDate extends StatefulWidget {
+  final String title; // Title field, must be initialized
+  final String? selectedMonth;
+  final int? selectedDate;
+  final int? selectedHour;
+  final String? selectedMinute;
+  final String? selectedAMPM;
+  final bool? dateConfirmed;
+  const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed});
+
+  @override
+  ConfirmDateState createState() => ConfirmDateState();
+}
+
+class ConfirmDateState extends State<ConfirmDate> {
+  String? selectedMonth;
+  int? selectedDate;
+  int? selectedHour; 
+  String? selectedMinute; 
+  String? selectedAMPM;
+  
+    @override
+    void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedDate = widget.selectedDate;
+    selectedHour = widget.selectedHour;
+    selectedMinute = widget.selectedMinute;
+    selectedAMPM = widget.selectedAMPM;
   }
   final amPMList = [
     "AM", "PM" 
