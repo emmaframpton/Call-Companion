@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Months(title: "Months"),
+      home: const Months(title: "Months"),
     );
   }
 }
@@ -53,7 +53,7 @@ class MonthsState extends State<Months> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
@@ -83,8 +83,8 @@ class MonthsState extends State<Months> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedMonth == monthsList[index]
-                      ? Color.fromARGB(255, 150, 245, 124)
-                      : Color.fromARGB(255, 87, 224, 124),
+                      ? const Color.fromARGB(255, 150, 245, 124)
+                      : const Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
@@ -152,7 +152,7 @@ class DatesState extends State<Dates> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.80, // 80% of the screen's width
           height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
@@ -183,8 +183,8 @@ class DatesState extends State<Dates> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedDate == index + 1
-                      ? Color.fromARGB(255, 150, 245, 124)
-                      : Color.fromARGB(255, 87, 224, 124),
+                      ? const Color.fromARGB(255, 150, 245, 124)
+                      : const Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
@@ -253,7 +253,7 @@ class HoursState extends State<Hours> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
           child: GridView.builder(
@@ -284,7 +284,7 @@ class HoursState extends State<Hours> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedHour == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  backgroundColor: selectedHour == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
@@ -327,6 +327,14 @@ class MinutesState extends State<Minutes> {
   int? selectedHour; 
   String? selectedMinute;
   
+  @override
+  void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedHour = widget.selectedHour;
+    selectedDate = widget.selectedDate;
+  }
+
   final minutesList = [
     ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
   ];
@@ -342,20 +350,12 @@ class MinutesState extends State<Minutes> {
       numColumns = 4;
     }
 
-    @override
-    void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedDate = widget.selectedDate;
-    selectedHour = widget.selectedHour;
-  }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
           child: GridView.builder(
@@ -376,7 +376,7 @@ class MinutesState extends State<Minutes> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AMPM(
-                          title: "$selectedMonth $selectedDate, $selectedHour:$selectedMinute",
+                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
@@ -387,7 +387,7 @@ class MinutesState extends State<Minutes> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedMinute == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  backgroundColor: selectedMinute == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
@@ -432,9 +432,18 @@ class AMPMState extends State<AMPM> {
   String? selectedMinute;
   String? selectedAMPM;
   
+    @override
+    void initState() {
+    super.initState();
+    selectedMonth = widget.selectedMonth;
+    selectedDate = widget.selectedDate;
+    selectedHour = widget.selectedHour;
+    selectedMinute = widget.selectedMinute;
+  }
   final amPMList = [
     "AM", "PM" 
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -447,21 +456,12 @@ class AMPMState extends State<AMPM> {
       numColumns = 4;
     }
 
-    @override
-    void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedDate = widget.selectedDate;
-    selectedHour = widget.selectedHour;
-    selectedMinute = widget.selectedMinute;
-  }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
           height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
           child: GridView.builder(
@@ -480,7 +480,7 @@ class AMPMState extends State<AMPM> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedAMPM == index ? Color.fromARGB(255, 150, 245, 124) : Color.fromARGB(255, 87, 224, 124),
+                  backgroundColor: selectedAMPM == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
