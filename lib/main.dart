@@ -527,7 +527,6 @@ class ConfirmDate extends StatefulWidget {
   final int? selectedHour;
   final String? selectedMinute;
   final String? selectedAMPM;
-  final bool? dateConfirmed;
   const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed});
 
   @override
@@ -565,20 +564,78 @@ class ConfirmDateState extends State<ConfirmDate> {
 
     dateConfirmed = true;
 
-    return Scaffold(
+return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text.rich(
-          TextSpan(
-            text: '', // default text style
-            children: <TextSpan>[
-              TextSpan(text: 'Confirm Date: ', style: TextStyle(fontStyle: FontStyle.italic)),
-              TextSpan(text: '$selectedMonth $selectedDate, $selectedHour:$selectedMinute $selectedAMPM', style: TextStyle(fontStyle: FontStyle.normal)),
-            ],
-          ),
-        )
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, 
+          crossAxisAlignment: CrossAxisAlignment.center, 
+          children: <Widget>[
+            Text.rich(
+              TextSpan(
+                text: '', 
+                children: <TextSpan>[
+                  TextSpan(text: 'Confirm Date:', style: TextStyle(fontStyle: FontStyle.italic, fontSize: MediaQuery.of(context).size.width * 0.04,)),                
+                ],
+              ),
+            ),
+            Text.rich(
+              TextSpan(
+                text: '', 
+                children: <TextSpan>[
+                  TextSpan(text: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.06)),
+                
+                ],
+              ),
+            ),
+            SizedBox(height: 20), // Add some space between the text and the button
+            // The ElevatedButton widget
+            ElevatedButton(
+                onPressed: () {
+                  dateConfirmed = true; 
+                  
+                  if (selectedMinute != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ConfirmDate(
+                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
+                          selectedMonth: selectedMonth,
+                          selectedDate: selectedDate,
+                          selectedHour: selectedHour,
+                          selectedMinute: selectedMinute,
+                          selectedAMPM: selectedAMPM,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              style: ElevatedButton.styleFrom(
+    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), 
+
+                backgroundColor: selectedAMPM == widget.selectedAMPM
+                    ? const Color.fromARGB(255, 150, 245, 124)
+                    : const Color.fromARGB(255, 87, 224, 124),
+                shape: const CircleBorder(
+                  side: BorderSide(
+                    color: Color.fromARGB(255, 17, 149, 53),
+                    width: 3.0,
+                  ),
+                ),
+              ),
+              child: const Text(
+                '✓', // Button label text
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40, // Adjusted font size for the button
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
