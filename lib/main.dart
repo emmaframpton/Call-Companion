@@ -540,6 +540,7 @@ class ConfirmDateState extends State<ConfirmDate> {
   int? selectedHour; 
   String? selectedMinute; 
   String? selectedAMPM;
+  bool? dateConfirmed;
   
     @override
     void initState() {
@@ -550,10 +551,6 @@ class ConfirmDateState extends State<ConfirmDate> {
     selectedMinute = widget.selectedMinute;
     selectedAMPM = widget.selectedAMPM;
   }
-  final amPMList = [
-    "AM", "PM" 
-  ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -566,51 +563,22 @@ class ConfirmDateState extends State<ConfirmDate> {
       numColumns = 4;
     }
 
+    dateConfirmed = true;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: 2, 
-            itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedMinute = amPMList[index];
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedAMPM == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
-                      )
-                  )
-                ),
-                child: Text(
-                  amPMList[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
+        child: Text.rich(
+          TextSpan(
+            text: '', // default text style
+            children: <TextSpan>[
+              TextSpan(text: 'Confirm Date: ', style: TextStyle(fontStyle: FontStyle.italic)),
+              TextSpan(text: '$selectedMonth $selectedDate, $selectedHour:$selectedMinute $selectedAMPM', style: TextStyle(fontStyle: FontStyle.normal)),
+            ],
           ),
-        ),
+        )
       ),
     );
   }
