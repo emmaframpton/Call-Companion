@@ -1,638 +1,293 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'timedate.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Call Companion',
+      title: 'Event Manager',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const Months(title: "Months"),
+      home: EventListPage(),
     );
   }
 }
 
-class Months extends StatefulWidget {
-  final String title; // Title field, must be initialized
-
-  const Months({super.key, required this.title});
-
+class EventListPage extends StatefulWidget {
   @override
-  MonthsState createState() => MonthsState();
+  _EventListPageState createState() => _EventListPageState();
 }
 
-class MonthsState extends State<Months> {
-  String? selectedMonth;
-  final monthsList = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
+class _EventListPageState extends State<EventListPage> {
+  List<String> events = []; // Stores event descriptions
+  final ScrollController _scrollController = ScrollController();
+
+  void addEvent(String event) {
+    setState(() {
+      events.add(event);
+    });
+  }
+
+  void editEvent(int index, String newEvent) {
+    setState(() {
+      events[index] = newEvent;
+    });
+  }
+
+  void scrollUp() {
+    _scrollController.animateTo(
+      _scrollController.offset - 120, // Scroll up by 100 pixels
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.offset + 120, // Scroll down by 100 pixels
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    int numColumns = 3;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Event List'),
       ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 2.0,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            itemCount: 12, // 12 months
+      body: Stack(
+        children: [
+          ListView.builder(
+            controller: _scrollController,
+            itemCount: events.length + 1, // Extra item for the "+" button
             itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  selectedMonth = monthsList[index]; 
-
-                  if (selectedMonth != null) {
-                    Navigator.push(
+              if (index == 0) {
+                // The "+" button
+                return InkWell(
+                  onTap: () async {
+                    final newEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Dates(
-                          title: "$selectedMonth _", //
-                          selectedMonth: selectedMonth,
-                        ),
+                        builder: (context) => NewEventPage(),
                       ),
                     );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedMonth == monthsList[index]
-                      ? const Color.fromARGB(255, 150, 245, 124)
-                      : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
+                    if (newEvent != null) {
+                      addEvent(newEvent);
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(8.0),
+                    height: 60,
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Icon(Icons.add, color: Colors.black, size: 32),
                     ),
                   ),
-                ),
-                child: Text(
-                  monthsList[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class Dates extends StatefulWidget {
-  final String title; // Title field, must be initialized
-  final String? selectedMonth;
-  const Dates({super.key, required this.title, required this.selectedMonth});
-
-  @override
-  DatesState createState() => DatesState();
-}
-
-class DatesState extends State<Dates> {
-  int? selectedDate;
-  String? selectedMonth; // Declare selectedMonth
-
-  final datesList = [
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-    "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
-    "24", "25", "26", "27", "28", "29", "30", "31"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth; // Initialize selectedMonth with the passed value
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int numColumns = 7;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 600) {
-      numColumns = 4;
-    } else if (screenWidth > 800) {
-      numColumns = 7;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.80, // 80% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: 31, // 31 days
-            itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  selectedDate = index + 1; 
-                  
-                  if (selectedDate != null) {
-                    Navigator.push(
+                );
+              } else {
+                // List of events with updated color and border
+                final eventIndex = index - 1;
+                return InkWell(
+                  onTap: () async {
+                    final editedEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Hours(
-                          title: "$selectedMonth $selectedDate, _:_",
-                          selectedMonth: selectedMonth,
-                          selectedDate: selectedDate,
+                        builder: (context) => EditEventPage(
+                          event: events[eventIndex],
                         ),
                       ),
                     );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedDate == index + 1
-                      ? const Color.fromARGB(255, 150, 245, 124)
-                      : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
+                    if (editedEvent != null) {
+                      editEvent(eventIndex, editedEvent);
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(8.0),
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFB57BD5), // Rectangle color
+                      border: Border.all(
+                        color: Color(0xFF560A7E), // Border color
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        events[eventIndex],
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                child: Text(
-                  datesList[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
+                );
+              }
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class Hours extends StatefulWidget {
-  final String title; // Title field, must be initialized
-  final String? selectedMonth;
-  final int? selectedDate;
-  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate, int? selectedHour});
-
-  @override
-  HoursState createState() => HoursState();
-}
-
-class HoursState extends State<Hours> {
-  String? selectedMonth;
-  int? selectedDate;
-  int? selectedHour; 
-  
-  final hoursList = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedDate = widget.selectedDate;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int numColumns = 3;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+          Positioned(
+            right: 16,
+            bottom: 100,
+            child: Column(
+              children: [
+                FloatingActionButton(
+                  onPressed: scrollUp,
+                  child: Icon(Icons.arrow_upward),
+                  mini: true,
+                ),
+                SizedBox(height: 8),
+                FloatingActionButton(
+                  onPressed: scrollDown,
+                  child: Icon(Icons.arrow_downward),
+                  mini: true,
+                ),
+              ],
             ),
-            itemCount: 12, // 12 hours
-            itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  selectedHour = index + 1; 
-                  
-                  if (selectedHour != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Minutes(
-                          title: "$selectedMonth $selectedDate, $selectedHour:_",
-                          selectedMonth: selectedMonth,
-                          selectedDate: selectedDate,
-                          selectedHour: selectedHour,
-                        ),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedHour == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
-                      )
-                  )
-                ),
-                child: Text(
-                  "${hoursList[index].toString()}:",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-class Minutes extends StatefulWidget {
-  final String title; // Title field, must be initialized
-  final String? selectedMonth;
-  final int? selectedDate;
-  final int? selectedHour;
-  const Minutes({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute});
-
-  @override
-  MinutesState createState() => MinutesState();
-}
-
-class MinutesState extends State<Minutes> {
-  String? selectedMonth;
-  int? selectedDate;
-  int? selectedHour; 
-  String? selectedMinute;
-  
-  @override
-  void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedHour = widget.selectedHour;
-    selectedDate = widget.selectedDate;
-  }
-
-  final minutesList = [
-    ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
-  ];
+class NewEventPage extends StatelessWidget {
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    int numColumns = 3;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: 12, // 12 minutes
-            itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  selectedMinute = minutesList[index]; 
-                  
-                  if (selectedMinute != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AMPM(
-                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
-                          selectedMonth: selectedMonth,
-                          selectedDate: selectedDate,
-                          selectedHour: selectedHour,
-                          selectedMinute: selectedMinute,
-                        ),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedMinute == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
-                      )
-                  )
-                ),
-                child: Text(
-                  minutesList[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AMPM extends StatefulWidget {
-  final String title; // Title field, must be initialized
-  final String? selectedMonth;
-  final int? selectedDate;
-  final int? selectedHour;
-  final String? selectedMinute;
-  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, String? selectedAMPM});
-
-  @override
-  AMPMState createState() => AMPMState();
-}
-
-class AMPMState extends State<AMPM> {
-  String? selectedMonth;
-  int? selectedDate;
-  int? selectedHour; 
-  String? selectedMinute; 
-  String? selectedAMPM;
-  
-    @override
-    void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedDate = widget.selectedDate;
-    selectedHour = widget.selectedHour;
-    selectedMinute = widget.selectedMinute;
-  }
-  final amPMList = [
-    "AM", "PM" 
-  ];
-
-
-  @override
-  Widget build(BuildContext context) {
-    int numColumns = 3;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: numColumns,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: 2, 
-            itemBuilder: (context, index) {
-              return ElevatedButton(
-                onPressed: () {
-                  selectedAMPM = amPMList[index]; 
-                  
-                  if (selectedMinute != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ConfirmDate(
-                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
-                          selectedMonth: selectedMonth,
-                          selectedDate: selectedDate,
-                          selectedHour: selectedHour,
-                          selectedMinute: selectedMinute,
-                          selectedAMPM: selectedAMPM,
-                        ),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedAMPM == index ? const Color.fromARGB(255, 150, 245, 124) : const Color.fromARGB(255, 87, 224, 124),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
-                      )
-                  )
-                ),
-                child: Text(
-                  amPMList[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ConfirmDate extends StatefulWidget {
-  final String title; // Title field, must be initialized
-  final String? selectedMonth;
-  final int? selectedDate;
-  final int? selectedHour;
-  final String? selectedMinute;
-  final String? selectedAMPM;
-  const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed});
-
-  @override
-  ConfirmDateState createState() => ConfirmDateState();
-}
-
-class ConfirmDateState extends State<ConfirmDate> {
-  String? selectedMonth;
-  int? selectedDate;
-  int? selectedHour; 
-  String? selectedMinute; 
-  String? selectedAMPM;
-  bool? dateConfirmed;
-  
-    @override
-    void initState() {
-    super.initState();
-    selectedMonth = widget.selectedMonth;
-    selectedDate = widget.selectedDate;
-    selectedHour = widget.selectedHour;
-    selectedMinute = widget.selectedMinute;
-    selectedAMPM = widget.selectedAMPM;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int numColumns = 3;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
-
-    dateConfirmed = true;
-
-return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
+      appBar: AppBar(title: Text('New Event')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, 
-          crossAxisAlignment: CrossAxisAlignment.center, 
-          children: <Widget>[
-            Text.rich(
-              TextSpan(
-                text: '', 
-                children: <TextSpan>[
-                  TextSpan(text: 'Confirm Date:', style: TextStyle(fontStyle: FontStyle.italic, fontSize: MediaQuery.of(context).size.width * 0.04,)),                
-                ],
-              ),
+          children: [
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(labelText: 'Event Name'),
             ),
-            Text.rich(
-              TextSpan(
-                text: '', 
-                children: <TextSpan>[
-                  TextSpan(text: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.06)),
-                
-                ],
-              ),
-            ),
-            SizedBox(height: 20), // Add some space between the text and the button
-            // The ElevatedButton widget
-            ElevatedButton(
-                onPressed: () {
-                  dateConfirmed = true; 
-                  
-                  if (selectedMinute != null) {
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Blue color for "Event Name" button
+                  ),
+                  onPressed: () {
+                    // Code to handle adding event name
+                  },
+                  child: Text('Event Name'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Green color for "Time/Date" button
+                  ),
+                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ConfirmDate(
-                          title: "$selectedMonth $selectedDate, $selectedHour$selectedMinute _",
-                          selectedMonth: selectedMonth,
-                          selectedDate: selectedDate,
-                          selectedHour: selectedHour,
-                          selectedMinute: selectedMinute,
-                          selectedAMPM: selectedAMPM,
+                        builder: (context) => Months(title: "Months"),
+                      ),
+                    );
+                  },
+                  child: Text('Time/Date'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Red color for "Location" button
+                  ),
+                  onPressed: () {
+                    // Code to handle adding location
+                  },
+                  child: Text('Location'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventListPage(),
+                      ),
+                    );
+                  },
+              child: Text('Add Event'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditEventPage extends StatelessWidget {
+  final TextEditingController controller;
+  EditEventPage({required String event}) : controller = TextEditingController(text: event);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Edit Event')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(labelText: 'Edit Event Name'),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Blue color for "Event Name" button
+                  ),
+                  onPressed: () {
+                    // Code to edit the event name
+                  },
+                  child: Text('Event Name'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Green color for "Time/Date" button
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Months(
+                          title: "Months",
                         ),
                       ),
                     );
-                  }
-                },
-              style: ElevatedButton.styleFrom(
-    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), 
-
-                backgroundColor: selectedAMPM == widget.selectedAMPM
-                    ? const Color.fromARGB(255, 150, 245, 124)
-                    : const Color.fromARGB(255, 87, 224, 124),
-                shape: const CircleBorder(
-                  side: BorderSide(
-                    color: Color.fromARGB(255, 17, 149, 53),
-                    width: 3.0,
+                  },
+                  child: Text('Time/Date'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Red color for "Location" button
                   ),
+                  onPressed: () {
+                    
+                  },
+                  child: Text('Location'),
                 ),
-              ),
-              child: const Text(
-                '✓', // Button label text
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40, // Adjusted font size for the button
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text('Save Changes'),
             ),
           ],
         ),
