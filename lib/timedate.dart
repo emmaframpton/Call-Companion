@@ -598,11 +598,7 @@ return Scaffold(
                       MaterialPageRoute(
                         builder: (context) => NewEventPage(
                           
-                          selectedMonth: selectedMonth ?? 'January',
-                          selectedDate: selectedDate ?? 1,
-                          selectedHour: selectedHour ?? 12,
-                          selectedMinute: selectedMinute ?? "0",
-                          selectedAMPM: selectedAMPM ?? 'AM',
+                          timeDate: "$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM",
                         ),
                         
                       ),

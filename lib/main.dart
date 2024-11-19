@@ -4,6 +4,11 @@ void main() {
   runApp(MyApp());
 }
 
+class Event {
+  String eventName = "";
+  String? eventTimeDate;
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,21 +23,24 @@ class MyApp extends StatelessWidget {
 }
 
 class EventListPage extends StatefulWidget {
+  Event? newEvent;
+  EventListPage({this.newEvent});
+
   @override
   _EventListPageState createState() => _EventListPageState();
 }
 
 class _EventListPageState extends State<EventListPage> {
-  List<String> events = []; // Stores event descriptions
+  List<Event> events = []; // Stores event descriptions
   final ScrollController _scrollController = ScrollController();
 
-  void addEvent(String event) {
+  void addEvent(Event event) {
     setState(() {
       events.add(event);
     });
   }
 
-  void editEvent(int index, String newEvent) {
+  void editEvent(int index, Event newEvent) {
     setState(() {
       events[index] = newEvent;
     });
@@ -121,7 +129,7 @@ class _EventListPageState extends State<EventListPage> {
                     ),
                     child: Center(
                       child: Text(
-                        events[eventIndex],
+                        events[eventIndex].eventName,
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
@@ -162,6 +170,7 @@ class NewEventPage extends StatelessWidget {
   NewEventPage({
     required this.timeDate,
   });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,7 +219,14 @@ class NewEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context, controller.text);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventListPage(newEvent: Event()
+        
+                    ),
+                  ),
+                );
               },
               child: Text('Add Event'),
             ),
@@ -223,7 +239,7 @@ class NewEventPage extends StatelessWidget {
 
 class EditEventPage extends StatelessWidget {
   final TextEditingController controller;
-  EditEventPage({required String event}) : controller = TextEditingController(text: event);
+  EditEventPage({required Event event}) : controller = TextEditingController(text: event.eventName);
   
   
   @override
