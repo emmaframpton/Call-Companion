@@ -1,4 +1,4 @@
-import 'dart:developer';
+//import 'dart:developer';
 
 import 'package:call_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -554,14 +554,9 @@ class ConfirmDateState extends State<ConfirmDate> {
 
   @override
   Widget build(BuildContext context) {
-    int numColumns = 3;
+    //int numColumns = 3;
     double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 350) {
-      numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
-    }
+    
 
     dateConfirmed = true;
 
@@ -597,12 +592,19 @@ return Scaffold(
                 onPressed: () {
                   dateConfirmed = true; 
                   
-                  if (selectedMinute != null) {
+                  if (selectedAMPM != null) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => NewEventPage(
+                          
+                          selectedMonth: selectedMonth ?? 'January',
+                          selectedDate: selectedDate ?? 1,
+                          selectedHour: selectedHour ?? 12,
+                          selectedMinute: selectedMinute ?? "0",
+                          selectedAMPM: selectedAMPM ?? 'AM',
                         ),
+                        
                       ),
                     );
                   }

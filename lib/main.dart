@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'timedate.dart';
 
 void main() {
   runApp(MyApp());
@@ -74,7 +73,9 @@ class _EventListPageState extends State<EventListPage> {
                     final newEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NewEventPage(),
+                        builder: (context) => NewEventPage(
+                          timeDate: "",
+                        ),
                       ),
                     );
                     if (newEvent != null) {
@@ -156,14 +157,11 @@ class _EventListPageState extends State<EventListPage> {
 
 class NewEventPage extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
+  String timeDate;
 
-  // variables from timedate.dart
-  String? selectedMonth;
-  int? selectedDate;
-  int? selectedHour; 
-  String? selectedMinute; 
-  String? selectedAMPM;
-
+  NewEventPage({
+    required this.timeDate,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,12 +192,7 @@ class NewEventPage extends StatelessWidget {
                     backgroundColor: Colors.green, // Green color for "Time/Date" button
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Months(title: "Months"),
-                      ),
-                    );
+                    // Code to handle adding time/date
                   },
                   child: Text('Time/Date'),
                 ),
@@ -217,38 +210,11 @@ class NewEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-
+                Navigator.pop(context, controller.text);
               },
               child: Text('Add Event'),
             ),
-            SizedBox(height: 20),
-            // Display the selected time/date variables
-            RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'Selected Time/Date: ', // Bold text
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '$selectedMonth $selectedDate, $selectedHour:$selectedMinute $selectedAMPM', // Normal text
-                    style: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-),
-
-            
           ],
-
         ),
       ),
     );
@@ -258,7 +224,8 @@ class NewEventPage extends StatelessWidget {
 class EditEventPage extends StatelessWidget {
   final TextEditingController controller;
   EditEventPage({required String event}) : controller = TextEditingController(text: event);
-
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -289,14 +256,7 @@ class EditEventPage extends StatelessWidget {
                     backgroundColor: Colors.green, // Green color for "Time/Date" button
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Months(
-                          title: "Months",
-                        ),
-                      ),
-                    );
+                    // Code to edit the time/date
                   },
                   child: Text('Time/Date'),
                 ),
@@ -305,7 +265,7 @@ class EditEventPage extends StatelessWidget {
                     backgroundColor: Colors.red, // Red color for "Location" button
                   ),
                   onPressed: () {
-                    
+                    // Code to edit the location
                   },
                   child: Text('Location'),
                 ),
