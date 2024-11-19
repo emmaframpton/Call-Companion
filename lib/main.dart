@@ -157,6 +157,13 @@ class _EventListPageState extends State<EventListPage> {
 class NewEventPage extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
 
+  // variables from timedate.dart
+  String? selectedMonth;
+  int? selectedDate;
+  int? selectedHour; 
+  String? selectedMinute; 
+  String? selectedAMPM;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,16 +217,38 @@ class NewEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EventListPage(),
-                      ),
-                    );
-                  },
+
+              },
               child: Text('Add Event'),
             ),
+            SizedBox(height: 20),
+            // Display the selected time/date variables
+            RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'Selected Time/Date: ', // Bold text
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '$selectedMonth $selectedDate, $selectedHour:$selectedMinute $selectedAMPM', // Normal text
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+),
+
+            
           ],
+
         ),
       ),
     );
