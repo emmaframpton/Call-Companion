@@ -2,6 +2,7 @@
 
 import 'package:call_companion/main.dart';
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 void main() {
   runApp(const MyApp());
@@ -592,15 +593,13 @@ return Scaffold(
                 onPressed: () {
                   dateConfirmed = true; 
                   
-                  if (selectedAMPM != null) {
+                  if (selectedMinute != null) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => NewEventPage(
-                          
-                          timeDate: "$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM",
+                          timeDate: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', 
                         ),
-                        
                       ),
                     );
                   }

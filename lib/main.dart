@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'timedate.dart';
 
 void main() {
   runApp(MyApp());
@@ -7,6 +8,9 @@ void main() {
 class Event {
   String eventName = "";
   String? eventTimeDate;
+
+  Event({this.eventName = "", this.eventTimeDate = ""});
+
 }
 
 class MyApp extends StatelessWidget {
@@ -23,9 +27,6 @@ class MyApp extends StatelessWidget {
 }
 
 class EventListPage extends StatefulWidget {
-  Event? newEvent;
-  EventListPage({this.newEvent});
-
   @override
   _EventListPageState createState() => _EventListPageState();
 }
@@ -81,9 +82,7 @@ class _EventListPageState extends State<EventListPage> {
                     final newEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NewEventPage(
-                          timeDate: "",
-                        ),
+                        builder: (context) => NewEventPage(),
                       ),
                     );
                     if (newEvent != null) {
@@ -163,13 +162,22 @@ class _EventListPageState extends State<EventListPage> {
   }
 }
 
-class NewEventPage extends StatelessWidget {
-  final TextEditingController controller = TextEditingController();
-  String timeDate;
+class NewEventPage extends StatefulWidget {
+  final String? timeDate;
+  NewEventPage({this.timeDate});
+  @override
+  _NewEventPageState createState() => _NewEventPageState();
+}
 
-  NewEventPage({
-    required this.timeDate,
-  });
+class _NewEventPageState extends State<NewEventPage> {
+  final TextEditingController controller = TextEditingController();
+  String? timeDate;
+
+    @override
+  void initState() {
+    super.initState();
+    timeDate = widget.timeDate;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +208,18 @@ class NewEventPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green, // Green color for "Time/Date" button
                   ),
-                  onPressed: () {
-                    // Code to handle adding time/date
+                  onPressed: () async {
+                    // Navigate to the Time/Date selection page
+                    final selectedTimeDate = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Months(title: "Select Time/Date"),
+                      ),
+                    );
+
+                    if (selectedTimeDate != null) {
+    
+                }
                   },
                   child: Text('Time/Date'),
                 ),
@@ -219,17 +237,35 @@ class NewEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EventListPage(newEvent: Event()
-        
-                    ),
-                  ),
-                );
-              },
+    Event newEvent = Event(eventName: controller.text, eventTimeDate: timeDate);
+    Navigator.pop(context, newEvent);
+  },
               child: Text('Add Event'),
             ),
+             SizedBox(height: 20),
+          RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'Selected Time/Date: ', // Bold text
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '$timeDate', // Normal text
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+),
+
           ],
         ),
       ),
