@@ -415,7 +415,7 @@ class _NewEventPageState extends State<NewEventPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Event newEvent = Event(eventName: controller.text, eventTimeDate: timeDate);
+                Event newEvent = Event(eventName: widget.eventName, eventTimeDate: widget.timeDate, eventLocation: widget.location);
                 widget.addEventCallback(newEvent);
 
                 // Navigate back to the EventListPage
