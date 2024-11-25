@@ -133,7 +133,7 @@ class DatesState extends State<Dates> {
   @override
   void initState() {
     super.initState();
-    selectedMonth = widget.selectedMonth; // Initialize selectedMonth with the passed value
+    selectedMonth = widget.selectedMonth; 
     _updateDatesList();
 
   }
@@ -157,13 +157,28 @@ class DatesState extends State<Dates> {
 
   @override
   Widget build(BuildContext context) {
-    int numColumns = 7;
     double screenWidth = MediaQuery.of(context).size.width;
+    int numColumns = 7;
+    double fontSize = 36;
 
-    if (screenWidth < 600) {
+    if (screenWidth < 370) {
+      numColumns = 2;
+      fontSize = 30;
+    }else if (screenWidth < 500) {
+      numColumns = 3;
+      fontSize = 30;
+    } else if (screenWidth < 600) {
       numColumns = 4;
-    } else if (screenWidth > 800) {
+      fontSize = 30;
+    } else if (screenWidth < 800) {
+      numColumns = 5;
+      fontSize = 30;
+    } else if (screenWidth < 850) {
       numColumns = 7;
+      fontSize = 30;
+    } else if (screenWidth > 850) {
+      numColumns = 7;
+      fontSize = 32;
     }
 
     return Scaffold(
@@ -215,9 +230,9 @@ class DatesState extends State<Dates> {
                 ),
                 child: Text(
                   datesList[index],
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
