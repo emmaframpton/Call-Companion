@@ -26,6 +26,7 @@ class LocationState extends State<Location> {
               controller: controller,
               decoration: InputDecoration(labelText: 'Location'),
             ),
+            SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

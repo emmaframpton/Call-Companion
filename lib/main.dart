@@ -427,6 +427,29 @@ class _NewEventPageState extends State<NewEventPage> {
               text: TextSpan(
                 children: [
                   const TextSpan(
+                    text: 'Selected Event Name: ', // Bold text
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '$eventName', // Normal text
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          SizedBox(height: 5),
+          RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
                     text: 'Selected Time/Date: ', // Bold text
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -436,6 +459,29 @@ class _NewEventPageState extends State<NewEventPage> {
                   ),
                   TextSpan(
                     text: '$timeDate', // Normal text
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          SizedBox(height: 5),
+          RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'Selected Location: ', // Bold text
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '$location', // Normal text
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
                       fontSize: 16,
