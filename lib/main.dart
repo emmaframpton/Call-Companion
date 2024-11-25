@@ -171,6 +171,9 @@ class _EventListPageState extends State<EventListPage> {
                 // The "+" button
                 return InkWell(
                   onTap: () async {
+                    widget.updateEventNameCallback("Untitled Event");
+                    widget.updateTimeDateCallback("No date selected");
+                    widget.updateLocationCallback("No location selected");
                     final newEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -184,7 +187,7 @@ class _EventListPageState extends State<EventListPage> {
                           timeDate: "No date selected",
                           location: "No location selected",
                         ),                        
-                      ),                     
+                      ),                    
                     );
                     if (newEvent != null) {
                       widget.addEventCallback(newEvent);  // Call the callback function to add the event
