@@ -511,12 +511,16 @@ class AMPMState extends State<AMPM> {
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
+    double fontSize = 36;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth < 350) {
+    if (screenWidth < 300) {
+      fontSize = 25;
+      numColumns = 1;
+    } else if (screenWidth < 750) {
+      numColumns = 1;
+    } else if (screenWidth > 750) {
       numColumns = 2;
-    } else if (screenWidth > 600) {
-      numColumns = 4;
     }
 
     return Scaffold(
@@ -525,8 +529,8 @@ class AMPMState extends State<AMPM> {
       ),
       body: Center(
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70, // 70% of the screen's width
-          height: MediaQuery.of(context).size.height * 0.50, // 70% of the screen's height
+          width: MediaQuery.of(context).size.width * 0.40, // 70% of the screen's width
+          height: MediaQuery.of(context).size.height * 0.70, // 70% of the screen's height
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: numColumns,
@@ -569,9 +573,9 @@ class AMPMState extends State<AMPM> {
                 ),
                 child: Text(
                   amPMList[index],
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
