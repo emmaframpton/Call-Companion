@@ -7,10 +7,10 @@ void main() {
 
 // Include location here when implementing!
 class Event {
-  String eventName = "";
-  String? eventTimeDate = "";
+  String eventName;
+  String? eventTimeDate;
 
-  Event({this.eventName = "", this.eventTimeDate = ""});
+  Event({this.eventName = "Untitled Event", this.eventTimeDate = "No date selected"});
 }
 
 class MyApp extends StatefulWidget {
@@ -20,7 +20,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<Event> events = []; 
-  String timeDate = "";
+  String timeDate = "No date selected";
   
   // Adds new events to the list
   void addEventCallback(Event newEvent) {
@@ -137,10 +137,10 @@ class _EventListPageState extends State<EventListPage> {
                           addEventCallback: widget.addEventCallback, // allows NewEventPage to add events to the existing list
                           updateTimeDateCallback: widget.updateTimeDateCallback,
                           events: widget.events,
-                          timeDate: timeDate,
+                          timeDate: "No date selected",
 
-                        ),
-                      ),
+                        ),                        
+                      ),                     
                     );
                     if (newEvent != null) {
                       widget.addEventCallback(newEvent);  // Call the callback function to add the event
