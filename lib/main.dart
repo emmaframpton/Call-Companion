@@ -74,10 +74,13 @@ class _MyAppState extends State<MyApp> {
       routes: {
       '/newEventPage': (context) => NewEventPage(
         addEventCallback: addEventCallback, 
+        updateEventNameCallback: updateEventNameCallback,
         updateTimeDateCallback: updateTimeDateCallback, 
+        updateLocationCallback: updateLocationCallback,
         events: events, 
+        eventName: eventName,
         timeDate: timeDate,
-        //location: location
+        location: location
         ),     
         //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
       },
@@ -99,13 +102,13 @@ class EventListPage extends StatefulWidget {
 
   EventListPage({
     required this.addEventCallback, 
-    required this.events, 
+    required this.updateEventNameCallback,
     required this.updateTimeDateCallback, 
+    required this.updateLocationCallback,
+    required this.events, 
     required this.timeDate,
     required this.eventName,
     required this.location,
-    required this.updateEventNameCallback,
-    required this.updateLocationCallback
     });
 
   @override
@@ -173,9 +176,13 @@ class _EventListPageState extends State<EventListPage> {
                       MaterialPageRoute(
                         builder: (context) => NewEventPage(
                           addEventCallback: widget.addEventCallback, // allows NewEventPage to add events to the existing list
+                          updateEventNameCallback: widget.updateEventNameCallback,
                           updateTimeDateCallback: widget.updateTimeDateCallback,
+                          updateLocationCallback: widget.updateLocationCallback,
                           events: widget.events,
+                          eventName: "Untitled Event",
                           timeDate: "No date selected",
+                          location: "No location selected",
                         ),                        
                       ),                     
                     );
@@ -270,27 +277,46 @@ class _EventListPageState extends State<EventListPage> {
 }
 
 class NewEventPage extends StatefulWidget {
-  Function(Event) addEventCallback; // Access to updating the event list
-  Function(String) updateTimeDateCallback; // Access to updating the event list
-  final List<Event>? events;
-  String timeDate = "";
+  final Function(Event) addEventCallback; // allows you to add new events to existing list
+  final Function(String) updateEventNameCallback; // allows you to add new events to existing list
+  final Function(String) updateTimeDateCallback; // allows you to add new events to existing list
+  final Function(String) updateLocationCallback; // allows you to add new events to existing list
 
-  NewEventPage({required this.addEventCallback, required this.events, required this.updateTimeDateCallback, required this.timeDate});
+
+  final List<Event>? events; // access to exisiting list
+  String eventName;
+  String timeDate;
+  String location;
+
+  NewEventPage({
+    required this.addEventCallback, 
+    required this.updateEventNameCallback,
+    required this.updateTimeDateCallback, 
+    required this.updateLocationCallback,
+    required this.events, 
+    required this.timeDate,
+    required this.eventName,
+    required this.location,
+    });
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
 
 class _NewEventPageState extends State<NewEventPage> {
   final TextEditingController controller = TextEditingController();
-  String? timeDate;
   List<Event>? events;
+  String? eventName;
+  String? timeDate;
+  String? location;
 
   // Access to parent variables
   @override
   void initState() {
     super.initState();
     events = widget.events ?? [];
+    eventName = widget.eventName;
     timeDate = widget.timeDate;
+    location = widget.location;
   }
 
   @override
@@ -365,9 +391,13 @@ class _NewEventPageState extends State<NewEventPage> {
       MaterialPageRoute(
         builder: (context) => EventListPage(
           addEventCallback: widget.addEventCallback,
+          updateEventNameCallback: widget.updateEventNameCallback,
           updateTimeDateCallback: widget.updateTimeDateCallback,
+          updateLocationCallback: widget.updateLocationCallback,
           events: widget.events!, // Pass the updated events list
+          eventName: eventName!,
           timeDate: timeDate!,
+          location: location!,
         ),
       ),
     );
