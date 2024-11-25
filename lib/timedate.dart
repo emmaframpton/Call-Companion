@@ -291,7 +291,6 @@ class HoursState extends State<Hours> {
     } else if (screenWidth > 650) {
       numColumns = 4;
       fontSize = 40;
-
     }
 
     return Scaffold(
@@ -388,15 +387,27 @@ class MinutesState extends State<Minutes> {
     ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
   ];
 
+  
+
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
+    double fontSize = 36;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth < 350) {
+    if (screenWidth < 300) {
       numColumns = 2;
-    } else if (screenWidth > 600) {
+      fontSize = 22;
+    } else if (screenWidth < 400) {
+      numColumns = 2;
+      fontSize = 32;
+    } else if (screenWidth < 500) {
+      numColumns = 2;
+    } else if (screenWidth < 650) {
+      numColumns = 3;
+    } else if (screenWidth > 650) {
       numColumns = 4;
+      fontSize = 40;
     }
 
     return Scaffold(
@@ -448,9 +459,9 @@ class MinutesState extends State<Minutes> {
                 ),
                 child: Text(
                   minutesList[index],
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
