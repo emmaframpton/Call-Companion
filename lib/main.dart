@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'timedate.dart';
+import 'location.dart';
+import 'eventname.dart';
 
 void main() {
   runApp(MyApp());
@@ -374,8 +376,22 @@ class _NewEventPageState extends State<NewEventPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red, // Red color for "Location" button
                   ),
-                  onPressed: () {
-                    // Code to handle adding location
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Location(
+                            updateLocationCallback: widget.updateLocationCallback,
+                          );
+                        },
+                      ),
+                    );
+                    // Allows you to navigate back to same instance of page you left
+                    Navigator.pushNamed(
+                      context,
+                      '/newEventPage',
+                    );
                   },
                   child: Text('Location'),
                 ),
