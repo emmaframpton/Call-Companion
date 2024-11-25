@@ -49,6 +49,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  String getTimeDate() {
+    return timeDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,22 +62,24 @@ class _MyAppState extends State<MyApp> {
       ),
       home: EventListPage(
         addEventCallback: addEventCallback, 
+        updateEventNameCallback: updateEventNameCallback,
         updateTimeDateCallback: updateTimeDateCallback,
+        updateLocationCallback: updateLocationCallback,
         events: events, // Pass current list of events
+        eventName: eventName,
         timeDate: timeDate,
+        location: location
       ),
       initialRoute: '/', // Routes used to return to the same instance of a page you directed away from (e.g. NewEvent -> Time/Date -> Same NewEvent Page)
       routes: {
       '/newEventPage': (context) => NewEventPage(
         addEventCallback: addEventCallback, 
-        updateEventNameCallback: updateEventNameCallback,
         updateTimeDateCallback: updateTimeDateCallback, 
-        updateLocationCallback: updateLocationCallback,
         events: events, 
-        eventName:eventName,
         timeDate: timeDate,
-        location: location
-        ),             
+        //location: location
+        ),     
+        //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
       },
     );
   }
@@ -81,12 +87,26 @@ class _MyAppState extends State<MyApp> {
 
 class EventListPage extends StatefulWidget {
   final Function(Event) addEventCallback; // allows you to add new events to existing list
+  final Function(String) updateEventNameCallback; // allows you to add new events to existing list
   final Function(String) updateTimeDateCallback; // allows you to add new events to existing list
+  final Function(String) updateLocationCallback; // allows you to add new events to existing list
+
 
   final List<Event>? events; // access to exisiting list
+  String eventName;
   String timeDate;
+  String location;
 
-  EventListPage({required this.addEventCallback, required this.events, required this.updateTimeDateCallback, required this.timeDate});
+  EventListPage({
+    required this.addEventCallback, 
+    required this.events, 
+    required this.updateTimeDateCallback, 
+    required this.timeDate,
+    required this.eventName,
+    required this.location,
+    required this.updateEventNameCallback,
+    required this.updateLocationCallback
+    });
 
   @override
   _EventListPageState createState() => _EventListPageState();
@@ -207,7 +227,7 @@ class _EventListPageState extends State<EventListPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            events[eventIndex].eventName,
+                            events[eventIndex].eventName!,
                             style: const TextStyle(fontSize: 18, color: Colors.white),
                             overflow: TextOverflow.ellipsis, // Ensure long text doesn't overflow
                           ),
