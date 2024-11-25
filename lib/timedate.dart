@@ -200,8 +200,7 @@ class DatesState extends State<Dates> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  selectedDate = index + 1; 
-                  
+                  selectedDate = index + 1;             
                   if (selectedDate != null) {
                     Navigator.push(
                       context,
@@ -245,7 +244,6 @@ class DatesState extends State<Dates> {
   }
 }
 
-
 class Hours extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
@@ -263,7 +261,6 @@ class HoursState extends State<Hours> {
   int? selectedDate;
   int? selectedHour; 
   
-  
   final hoursList = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
   ];
@@ -279,11 +276,22 @@ class HoursState extends State<Hours> {
   Widget build(BuildContext context) {
     int numColumns = 3;
     double screenWidth = MediaQuery.of(context).size.width;
+    double fontSize = 36;
 
-    if (screenWidth < 350) {
+    if (screenWidth < 300) {
       numColumns = 2;
-    } else if (screenWidth > 600) {
+      fontSize = 22;
+    } else if (screenWidth < 400) {
+      numColumns = 2;
+      fontSize = 32;
+    } else if (screenWidth < 500) {
+      numColumns = 2;
+    } else if (screenWidth < 650) {
+      numColumns = 3;
+    } else if (screenWidth > 650) {
       numColumns = 4;
+      fontSize = 40;
+
     }
 
     return Scaffold(
@@ -334,9 +342,9 @@ class HoursState extends State<Hours> {
                 ),
                 child: Text(
                   "${hoursList[index].toString()}:",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
