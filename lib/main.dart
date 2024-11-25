@@ -66,12 +66,14 @@ class _MyAppState extends State<MyApp> {
       routes: {
       '/newEventPage': (context) => NewEventPage(
         addEventCallback: addEventCallback, 
+        updateEventNameCallback: updateEventNameCallback,
         updateTimeDateCallback: updateTimeDateCallback, 
+        updateLocationCallback: updateLocationCallback,
         events: events, 
+        eventName:eventName,
         timeDate: timeDate,
         location: location
-        ),     
-        //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
+        ),             
       },
     );
   }
