@@ -1,33 +1,13 @@
 //import 'dart:developer';
-
-import 'package:call_companion/main.dart';
+//import 'package:call_companion/main.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Call Companion',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const Months(title: "Months"),
-    );
-  }
-}
-
 class Months extends StatefulWidget {
   final String title; // Title field, must be initialized
+  final Function(String) updateTimeDateCallback;
 
-  const Months({super.key, required this.title});
+  const Months({super.key, required this.title, required this.updateTimeDateCallback});
 
   @override
   MonthsState createState() => MonthsState();
@@ -69,6 +49,7 @@ class MonthsState extends State<Months> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
+                  widget.updateTimeDateCallback("hello");
                   selectedMonth = monthsList[index]; 
 
                   if (selectedMonth != null) {
@@ -78,6 +59,7 @@ class MonthsState extends State<Months> {
                         builder: (context) => Dates(
                           title: "$selectedMonth _", //
                           selectedMonth: selectedMonth,
+                          updateTimeDateCallback: widget.updateTimeDateCallback
                         ),
                       ),
                     );
@@ -116,7 +98,9 @@ class MonthsState extends State<Months> {
 class Dates extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
-  const Dates({super.key, required this.title, required this.selectedMonth});
+  final Function(String) updateTimeDateCallback;
+
+  const Dates({super.key, required this.title, required this.selectedMonth, required this.updateTimeDateCallback});
 
   @override
   DatesState createState() => DatesState();
@@ -178,6 +162,7 @@ class DatesState extends State<Dates> {
                           title: "$selectedMonth $selectedDate, _:_",
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
+                          updateTimeDateCallback: widget.updateTimeDateCallback
                         ),
                       ),
                     );
@@ -217,7 +202,9 @@ class Hours extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
   final int? selectedDate;
-  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate, int? selectedHour});
+  final Function(String) updateTimeDateCallback;
+
+  const Hours({super.key, required this.title, required this.selectedMonth, required this.selectedDate, int? selectedHour, required this.updateTimeDateCallback});
 
   @override
   HoursState createState() => HoursState();
@@ -227,6 +214,7 @@ class HoursState extends State<Hours> {
   String? selectedMonth;
   int? selectedDate;
   int? selectedHour; 
+  
   
   final hoursList = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
@@ -280,6 +268,7 @@ class HoursState extends State<Hours> {
                           selectedMonth: selectedMonth,
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
+                          updateTimeDateCallback: widget.updateTimeDateCallback
                         ),
                       ),
                     );
@@ -317,7 +306,9 @@ class Minutes extends StatefulWidget {
   final String? selectedMonth;
   final int? selectedDate;
   final int? selectedHour;
-  const Minutes({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute});
+  final Function(String) updateTimeDateCallback;
+
+  const Minutes({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, int? selectedMinute, required this.updateTimeDateCallback});
 
   @override
   MinutesState createState() => MinutesState();
@@ -383,6 +374,7 @@ class MinutesState extends State<Minutes> {
                           selectedDate: selectedDate,
                           selectedHour: selectedHour,
                           selectedMinute: selectedMinute,
+                          updateTimeDateCallback: widget.updateTimeDateCallback
                         ),
                       ),
                     );
@@ -421,7 +413,9 @@ class AMPM extends StatefulWidget {
   final int? selectedDate;
   final int? selectedHour;
   final String? selectedMinute;
-  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, String? selectedAMPM});
+    final Function(String) updateTimeDateCallback;
+
+  const AMPM({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, String? selectedAMPM, required this.updateTimeDateCallback});
 
   @override
   AMPMState createState() => AMPMState();
@@ -490,6 +484,7 @@ class AMPMState extends State<AMPM> {
                           selectedHour: selectedHour,
                           selectedMinute: selectedMinute,
                           selectedAMPM: selectedAMPM,
+                          updateTimeDateCallback: widget.updateTimeDateCallback,
                         ),
                       ),
                     );
@@ -529,7 +524,10 @@ class ConfirmDate extends StatefulWidget {
   final int? selectedHour;
   final String? selectedMinute;
   final String? selectedAMPM;
-  const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed});
+    final Function(String) updateTimeDateCallback;
+
+
+  const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed, required this.updateTimeDateCallback});
 
   @override
   ConfirmDateState createState() => ConfirmDateState();
@@ -542,7 +540,10 @@ class ConfirmDateState extends State<ConfirmDate> {
   String? selectedMinute; 
   String? selectedAMPM;
   bool? dateConfirmed;
-  
+    late Function(String) onDateConfirmed;
+
+
+
     @override
     void initState() {
     super.initState();
@@ -587,23 +588,19 @@ return Scaffold(
                 ],
               ),
             ),
-            SizedBox(height: 20), // Add some space between the text and the button
+            SizedBox(height: 20), 
             // The ElevatedButton widget
             ElevatedButton(
                 onPressed: () {
-                  dateConfirmed = true; 
-                  
-                  if (selectedMinute != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewEventPage(
-                          timeDate: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', 
-                        ),
-                      ),
-                    );
-                  }
-                },
+                      widget.updateTimeDateCallback("$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM");
+
+
+                Navigator.popUntil(context, (route) {
+                                //onDateConfirmed("$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM");  // Update the timeDate in the parent widget
+
+              return route.settings.name == '/eventList';
+            });
+              },
               style: ElevatedButton.styleFrom(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), 
 

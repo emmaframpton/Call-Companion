@@ -5,15 +5,40 @@ void main() {
   runApp(MyApp());
 }
 
+// Include location here when implementing!
 class Event {
   String eventName = "";
-  String? eventTimeDate;
+  String? eventTimeDate = "";
 
   Event({this.eventName = "", this.eventTimeDate = ""});
-
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  List<Event> events = []; 
+  String timeDate = "";
+  
+  // Adds new events to the list
+  void addEventCallback(Event newEvent) {
+    setState(() {
+      events.add(newEvent);
+    });
+  }
+
+  void updateTimeDateCallback(String newTimeDate) {
+    setState(() {
+      timeDate = newTimeDate;
+    });
+  }
+
+  String getTimeDate() {
+    return timeDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,19 +46,45 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: EventListPage(),
+      home: EventListPage(
+        addEventCallback: addEventCallback, 
+        updateTimeDateCallback: updateTimeDateCallback,
+        events: events, // Pass current list of events
+        timeDate: timeDate,
+      ),
+      initialRoute: '/', // Routes used to return to the same instance of a page you directed away from (e.g. NewEvent -> Time/Date -> Same NewEvent Page)
+      routes: {
+        '/newEventPage': (context) => NewEventPage(addEventCallback: addEventCallback, updateTimeDateCallback: updateTimeDateCallback, events: events, timeDate: timeDate),
+        //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
+      },
     );
   }
 }
 
 class EventListPage extends StatefulWidget {
+  final Function(Event) addEventCallback; // allows you to add new events to existing list
+  final Function(String) updateTimeDateCallback; // allows you to add new events to existing list
+
+  final List<Event>? events; // access to exisiting list
+  String timeDate;
+
+  EventListPage({required this.addEventCallback, required this.events, required this.updateTimeDateCallback, required this.timeDate});
+
   @override
   _EventListPageState createState() => _EventListPageState();
 }
 
 class _EventListPageState extends State<EventListPage> {
-  List<Event> events = []; // Stores event descriptions
+  List<Event> events = [];
   final ScrollController _scrollController = ScrollController();
+  String timeDate = "";
+
+  @override
+  void initState() {
+    super.initState();
+    events = widget.events ?? []; // Initialize events to an empty list if null
+    timeDate = widget.timeDate;
+  }
 
   void addEvent(Event event) {
     setState(() {
@@ -82,12 +133,18 @@ class _EventListPageState extends State<EventListPage> {
                     final newEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NewEventPage(),
+                        builder: (context) => NewEventPage(
+                          addEventCallback: widget.addEventCallback, // allows NewEventPage to add events to the existing list
+                          updateTimeDateCallback: widget.updateTimeDateCallback,
+                          events: widget.events,
+                          timeDate: timeDate,
+
+                        ),
                       ),
                     );
                     if (newEvent != null) {
-                      addEvent(newEvent);
-                    }
+                      widget.addEventCallback(newEvent);  // Call the callback function to add the event
+                    } 
                   },
                   child: Container(
                     margin: EdgeInsets.all(8.0),
@@ -100,6 +157,7 @@ class _EventListPageState extends State<EventListPage> {
                 );
               } else {
                 // List of events with updated color and border
+                // I haven't implemented anything with editing the event!
                 final eventIndex = index - 1;
                 return InkWell(
                   onTap: () async {
@@ -117,7 +175,7 @@ class _EventListPageState extends State<EventListPage> {
                   },
                   child: Container(
                     margin: EdgeInsets.all(8.0),
-                    height: 60,
+                    height: 100,
                     decoration: BoxDecoration(
                       color: Color(0xFFB57BD5), // Rectangle color
                       border: Border.all(
@@ -126,10 +184,22 @@ class _EventListPageState extends State<EventListPage> {
                       ),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: Center(
-                      child: Text(
-                        events[eventIndex].eventName,
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            events[eventIndex].eventName,
+                            style: const TextStyle(fontSize: 18, color: Colors.white),
+                            overflow: TextOverflow.ellipsis, // Ensure long text doesn't overflow
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            events[eventIndex].eventTimeDate ?? 'No time/date set',
+                            style: const TextStyle(fontSize: 14, color: Colors.white70), // Lighter color for time/date
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -163,8 +233,12 @@ class _EventListPageState extends State<EventListPage> {
 }
 
 class NewEventPage extends StatefulWidget {
-  final String? timeDate;
-  NewEventPage({this.timeDate});
+  Function(Event) addEventCallback; // Access to updating the event list
+  Function(String) updateTimeDateCallback; // Access to updating the event list
+  final List<Event>? events;
+  String timeDate = "";
+
+  NewEventPage({required this.addEventCallback, required this.events, required this.updateTimeDateCallback, required this.timeDate});
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
@@ -172,10 +246,13 @@ class NewEventPage extends StatefulWidget {
 class _NewEventPageState extends State<NewEventPage> {
   final TextEditingController controller = TextEditingController();
   String? timeDate;
+  List<Event>? events;
 
-    @override
+  // Access to parent variables
+  @override
   void initState() {
     super.initState();
+    events = widget.events ?? [];
     timeDate = widget.timeDate;
   }
 
@@ -209,17 +286,22 @@ class _NewEventPageState extends State<NewEventPage> {
                     backgroundColor: Colors.green, // Green color for "Time/Date" button
                   ),
                   onPressed: () async {
-                    // Navigate to the Time/Date selection page
-                    final selectedTimeDate = await Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Months(title: "Select Time/Date"),
+                        builder: (context) {
+                          return Months(
+                            title: "Months",
+                            updateTimeDateCallback: widget.updateTimeDateCallback,
+                          );
+                        },
                       ),
                     );
-
-                    if (selectedTimeDate != null) {
-    
-                }
+                    // Allows you to navigate back to same instance of page you left
+                    Navigator.pushNamed(
+                      context,
+                      '/newEventPage',
+                    );
                   },
                   child: Text('Time/Date'),
                 ),
@@ -237,9 +319,22 @@ class _NewEventPageState extends State<NewEventPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-    Event newEvent = Event(eventName: controller.text, eventTimeDate: timeDate);
-    Navigator.pop(context, newEvent);
-  },
+                Event newEvent = Event(eventName: controller.text, eventTimeDate: timeDate);
+                widget.addEventCallback(newEvent);
+
+                // Navigate back to the EventListPage
+                Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventListPage(
+          addEventCallback: widget.addEventCallback,
+          updateTimeDateCallback: widget.updateTimeDateCallback,
+          events: widget.events!, // Pass the updated events list
+          timeDate: timeDate!,
+        ),
+      ),
+    );
+              },
               child: Text('Add Event'),
             ),
              SizedBox(height: 20),
@@ -326,7 +421,11 @@ class EditEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context, controller.text);
+    
+
+                Navigator.popUntil(context, (route) {
+              return route.settings.name == '/eventList';
+            });
               },
               child: Text('Save Changes'),
             ),
