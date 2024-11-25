@@ -9,8 +9,11 @@ class Event {
   String? eventName;
   String? eventTimeDate;
   String? eventLocation;
-
-  Event({this.eventName = "Untitled Event", this.eventTimeDate = "No date selected", this.eventLocation = "No location selected"});
+  Event({
+    this.eventName = "Untitled Event", 
+    this.eventTimeDate = "No date selected", 
+    this.eventLocation = "No location selected"
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -24,7 +27,6 @@ class _MyAppState extends State<MyApp> {
   String timeDate = "No date selected";
   String location = "No location selected";
   
-  // Adds new events to the list
   void addEventCallback(Event newEvent) {
     setState(() {
       events.add(newEvent);
@@ -90,10 +92,9 @@ class _MyAppState extends State<MyApp> {
 
 class EventListPage extends StatefulWidget {
   final Function(Event) addEventCallback; // allows you to add new events to existing list
-  final Function(String) updateEventNameCallback; // allows you to add new events to existing list
-  final Function(String) updateTimeDateCallback; // allows you to add new events to existing list
-  final Function(String) updateLocationCallback; // allows you to add new events to existing list
-
+  final Function(String) updateEventNameCallback; 
+  final Function(String) updateTimeDateCallback;
+  final Function(String) updateLocationCallback; 
 
   final List<Event>? events; // access to exisiting list
   String eventName;
@@ -109,7 +110,7 @@ class EventListPage extends StatefulWidget {
     required this.timeDate,
     required this.eventName,
     required this.location,
-    });
+  });
 
   @override
   _EventListPageState createState() => _EventListPageState();
@@ -118,13 +119,13 @@ class EventListPage extends StatefulWidget {
 class _EventListPageState extends State<EventListPage> {
   List<Event> events = [];
   final ScrollController _scrollController = ScrollController();
-  String timeDate = "";
+  //String timeDate = "";
 
   @override
   void initState() {
     super.initState();
     events = widget.events ?? []; // Initialize events to an empty list if null
-    timeDate = widget.timeDate;
+    //timeDate = widget.timeDate;
   }
 
   void addEvent(Event event) {
@@ -278,9 +279,9 @@ class _EventListPageState extends State<EventListPage> {
 
 class NewEventPage extends StatefulWidget {
   final Function(Event) addEventCallback; // allows you to add new events to existing list
-  final Function(String) updateEventNameCallback; // allows you to add new events to existing list
-  final Function(String) updateTimeDateCallback; // allows you to add new events to existing list
-  final Function(String) updateLocationCallback; // allows you to add new events to existing list
+  final Function(String) updateEventNameCallback; 
+  final Function(String) updateTimeDateCallback; 
+  final Function(String) updateLocationCallback;
 
 
   final List<Event>? events; // access to exisiting list
@@ -298,6 +299,7 @@ class NewEventPage extends StatefulWidget {
     required this.eventName,
     required this.location,
     });
+
   @override
   _NewEventPageState createState() => _NewEventPageState();
 }
@@ -387,24 +389,24 @@ class _NewEventPageState extends State<NewEventPage> {
 
                 // Navigate back to the EventListPage
                 Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EventListPage(
-          addEventCallback: widget.addEventCallback,
-          updateEventNameCallback: widget.updateEventNameCallback,
-          updateTimeDateCallback: widget.updateTimeDateCallback,
-          updateLocationCallback: widget.updateLocationCallback,
-          events: widget.events!, // Pass the updated events list
-          eventName: eventName!,
-          timeDate: timeDate!,
-          location: location!,
-        ),
-      ),
-    );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventListPage(
+                      addEventCallback: widget.addEventCallback,
+                      updateEventNameCallback: widget.updateEventNameCallback,
+                      updateTimeDateCallback: widget.updateTimeDateCallback,
+                      updateLocationCallback: widget.updateLocationCallback,
+                      events: widget.events!, // Pass the updated events list
+                      eventName: eventName!,
+                      timeDate: timeDate!,
+                      location: location!,
+                    ),
+                  ),
+                );
               },
               child: Text('Add Event'),
             ),
-             SizedBox(height: 20),
+          SizedBox(height: 20),
           RichText(
               text: TextSpan(
                 children: [
@@ -426,8 +428,7 @@ class _NewEventPageState extends State<NewEventPage> {
                   ),
                 ],
               ),
-),
-
+            ),
           ],
         ),
       ),
@@ -438,7 +439,6 @@ class _NewEventPageState extends State<NewEventPage> {
 class EditEventPage extends StatelessWidget {
   final TextEditingController controller;
   EditEventPage({required Event event}) : controller = TextEditingController(text: event.eventName);
-  
   
   @override
   Widget build(BuildContext context) {
@@ -488,11 +488,9 @@ class EditEventPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-    
-
                 Navigator.popUntil(context, (route) {
-              return route.settings.name == '/eventList';
-            });
+                  return route.settings.name == '/eventList';
+                });
               },
               child: Text('Save Changes'),
             ),
