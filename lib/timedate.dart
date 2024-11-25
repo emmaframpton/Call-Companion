@@ -103,7 +103,6 @@ class MonthsState extends State<Months> {
   }
 }
 
-
 class Dates extends StatefulWidget {
   final String title; // Title field, must be initialized
   final String? selectedMonth;
@@ -387,8 +386,6 @@ class MinutesState extends State<Minutes> {
     ":00", ":05", ":10", ":15", ":20", ":25", ":30", ":35", ":40", ":45", ":50", ":55", 
   ];
 
-  
-
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
@@ -507,7 +504,6 @@ class AMPMState extends State<AMPM> {
     "AM", "PM" 
   ];
 
-
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
@@ -542,8 +538,7 @@ class AMPMState extends State<AMPM> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  selectedAMPM = amPMList[index]; 
-                  
+                  selectedAMPM = amPMList[index];                   
                   if (selectedMinute != null) {
                     Navigator.push(
                       context,
@@ -595,8 +590,7 @@ class ConfirmDate extends StatefulWidget {
   final int? selectedHour;
   final String? selectedMinute;
   final String? selectedAMPM;
-    final Function(String) updateTimeDateCallback;
-
+  final Function(String) updateTimeDateCallback;
 
   const ConfirmDate({super.key, required this.title, required this.selectedMonth, required this.selectedDate, required this.selectedHour, required this.selectedMinute, required this.selectedAMPM, bool? dateConfirmed, required this.updateTimeDateCallback});
 
@@ -610,13 +604,10 @@ class ConfirmDateState extends State<ConfirmDate> {
   int? selectedHour; 
   String? selectedMinute; 
   String? selectedAMPM;
-  bool? dateConfirmed;
-    late Function(String) onDateConfirmed;
+  bool? dateConfirmed;    
 
-
-
-    @override
-    void initState() {
+  @override
+  void initState() {
     super.initState();
     selectedMonth = widget.selectedMonth;
     selectedDate = widget.selectedDate;
@@ -627,13 +618,9 @@ class ConfirmDateState extends State<ConfirmDate> {
 
   @override
   Widget build(BuildContext context) {
-    //int numColumns = 3;
     double screenWidth = MediaQuery.of(context).size.width;
-    
-
     dateConfirmed = true;
-
-return Scaffold(
+  return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -646,7 +633,8 @@ return Scaffold(
               TextSpan(
                 text: '', 
                 children: <TextSpan>[
-                  TextSpan(text: 'Confirm Date:', style: TextStyle(fontStyle: FontStyle.italic, fontSize: MediaQuery.of(context).size.width * 0.04,)),                
+                  TextSpan(text: 'Confirm Date:', 
+                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: MediaQuery.of(context).size.width * 0.04,)),                
                 ],
               ),
             ),
@@ -654,27 +642,22 @@ return Scaffold(
               TextSpan(
                 text: '', 
                 children: <TextSpan>[
-                  TextSpan(text: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.07)),
-                
+                  TextSpan(
+                    text: '$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM', 
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.07)),          
                 ],
               ),
             ),
             SizedBox(height: 20), 
-            // The ElevatedButton widget
             ElevatedButton(
-                onPressed: () {
-                      widget.updateTimeDateCallback("$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM");
-
-
+              onPressed: () {
+                widget.updateTimeDateCallback("$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM");
                 Navigator.popUntil(context, (route) {
-                                //onDateConfirmed("$selectedMonth $selectedDate, $selectedHour$selectedMinute $selectedAMPM");  // Update the timeDate in the parent widget
-
-              return route.settings.name == '/eventList';
-            });
+                  return route.settings.name == '/eventList';
+                });
               },
               style: ElevatedButton.styleFrom(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), 
-
                 backgroundColor: selectedAMPM == widget.selectedAMPM
                     ? const Color.fromARGB(255, 150, 245, 124)
                     : const Color.fromARGB(255, 87, 224, 124),
@@ -686,10 +669,10 @@ return Scaffold(
                 ),
               ),
               child: const Text(
-                '✓', // Button label text
+                '✓', 
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 40, // Adjusted font size for the button
+                  fontSize: 40, 
                   fontWeight: FontWeight.bold,
                 ),
               ),
