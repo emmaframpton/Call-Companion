@@ -21,10 +21,11 @@ class MonthsState extends State<Months> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     int numColumns = 3;
     double fontSize = 30;
-    double screenWidth = MediaQuery.of(context).size.width;
 
+    // responsive design
     if (screenWidth < 300) {
       numColumns = 1;
     } else if (screenWidth < 500) {
@@ -59,9 +60,7 @@ class MonthsState extends State<Months> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  widget.updateTimeDateCallback("hello");
                   selectedMonth = monthsList[index]; 
-
                   if (selectedMonth != null) {
                     Navigator.push(
                       context,
@@ -119,17 +118,41 @@ class Dates extends StatefulWidget {
 class DatesState extends State<Dates> {
   int? selectedDate;
   String? selectedMonth; // Declare selectedMonth
+  int numDays = 31;
 
-  final datesList = [
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-    "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
-    "24", "25", "26", "27", "28", "29", "30", "31"
+  List<String> datesList = [];
+
+  final days30 = [
+    "Apr", "Jun", "Sep", "Nov"
+  ];
+
+  final days31 = [
+    "Jan", "Mar", "May", "Jul", "Aug", "Oct", "Dec"
   ];
 
   @override
   void initState() {
     super.initState();
     selectedMonth = widget.selectedMonth; // Initialize selectedMonth with the passed value
+    _updateDatesList();
+
+  }
+
+  void _updateDatesList() { 
+    if (days30.contains(selectedMonth)) {
+        numDays = 30;
+        datesList = List.generate(numDays, (index) => (index + 1).toString());
+      } else if (days31.contains(selectedMonth)) {
+        numDays = 31;
+        datesList = List.generate(numDays, (index) => (index + 1).toString());
+      } else {
+        if(DateTime.now().year % 4 == 0 && (DateTime.now().year % 100 != 0 || DateTime.now().year % 400 == 0)) { // leap year check
+          numDays = 29;
+        } else {
+          numDays = 28;
+        }     
+        datesList = List.generate(numDays, (index) => (index + 1).toString());
+      }
   }
 
   @override
@@ -158,7 +181,7 @@ class DatesState extends State<Dates> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: 31, // 31 days
+            itemCount: numDays,
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
