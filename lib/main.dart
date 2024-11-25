@@ -5,12 +5,12 @@ void main() {
   runApp(MyApp());
 }
 
-// Include location here when implementing!
 class Event {
-  String eventName;
+  String? eventName;
   String? eventTimeDate;
+  String? eventLocation;
 
-  Event({this.eventName = "Untitled Event", this.eventTimeDate = "No date selected"});
+  Event({this.eventName = "Untitled Event", this.eventTimeDate = "No date selected", this.eventLocation = "No location selected"});
 }
 
 class MyApp extends StatefulWidget {
@@ -20,12 +20,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<Event> events = []; 
+  String eventName = "No name selected";
   String timeDate = "No date selected";
+  String location = "No location selected";
   
   // Adds new events to the list
   void addEventCallback(Event newEvent) {
     setState(() {
       events.add(newEvent);
+    });
+  }
+
+  void updateEventNameCallback(String newEventName) {
+    setState(() {
+      eventName = newEventName;
     });
   }
 
@@ -35,8 +43,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  String getTimeDate() {
-    return timeDate;
+  void updateLocationCallback(String newLocation) {
+    setState(() {
+      location = newLocation;
+    });
   }
 
   @override
@@ -54,7 +64,13 @@ class _MyAppState extends State<MyApp> {
       ),
       initialRoute: '/', // Routes used to return to the same instance of a page you directed away from (e.g. NewEvent -> Time/Date -> Same NewEvent Page)
       routes: {
-        '/newEventPage': (context) => NewEventPage(addEventCallback: addEventCallback, updateTimeDateCallback: updateTimeDateCallback, events: events, timeDate: timeDate),
+      '/newEventPage': (context) => NewEventPage(
+        addEventCallback: addEventCallback, 
+        updateTimeDateCallback: updateTimeDateCallback, 
+        events: events, 
+        timeDate: timeDate,
+        location: location
+        ),     
         //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
       },
     );
@@ -138,7 +154,6 @@ class _EventListPageState extends State<EventListPage> {
                           updateTimeDateCallback: widget.updateTimeDateCallback,
                           events: widget.events,
                           timeDate: "No date selected",
-
                         ),                        
                       ),                     
                     );
