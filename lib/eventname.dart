@@ -29,7 +29,7 @@ class EventNameState extends State<EventName> {
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.blue,
               ),
               onPressed: () async {
                 widget.updateEventNameCallback(controller.text);

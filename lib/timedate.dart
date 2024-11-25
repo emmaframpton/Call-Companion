@@ -22,11 +22,21 @@ class MonthsState extends State<Months> {
   @override
   Widget build(BuildContext context) {
     int numColumns = 3;
+    double fontSize = 30;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth < 350) {
+    if (screenWidth < 300) {
+      numColumns = 1;
+    } else if (screenWidth < 500) {
       numColumns = 2;
-    } else if (screenWidth > 600) {
+      fontSize = 22;
+    } else if (screenWidth < 650) {
+      numColumns = 3;
+      fontSize = 22;
+    } else if (screenWidth < 700) {
+      numColumns = 4;
+      fontSize = 22;
+    } else if (screenWidth > 700) {
       numColumns = 4;
     }
 
@@ -79,9 +89,9 @@ class MonthsState extends State<Months> {
                 ),
                 child: Text(
                   monthsList[index],
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 30,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

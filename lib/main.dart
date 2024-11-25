@@ -86,7 +86,6 @@ class _MyAppState extends State<MyApp> {
         timeDate: timeDate,
         location: location
         ),     
-        //'/months': (context) => const Months(title: "Months", updateTimeDateCallback: update,),
       },
     );
   }
@@ -121,13 +120,11 @@ class EventListPage extends StatefulWidget {
 class _EventListPageState extends State<EventListPage> {
   List<Event> events = [];
   final ScrollController _scrollController = ScrollController();
-  //String timeDate = "";
 
   @override
   void initState() {
     super.initState();
     events = widget.events ?? []; // Initialize events to an empty list if null
-    //timeDate = widget.timeDate;
   }
 
   void addEvent(Event event) {
@@ -237,14 +234,18 @@ class _EventListPageState extends State<EventListPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            events[eventIndex].eventName!,
+                            events[eventIndex].eventName ?? "Untitled Event",
                             style: const TextStyle(fontSize: 18, color: Colors.white),
-                            overflow: TextOverflow.ellipsis, // Ensure long text doesn't overflow
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             events[eventIndex].eventTimeDate ?? 'No time/date set',
-                            style: const TextStyle(fontSize: 14, color: Colors.white70), // Lighter color for time/date
+                            style: const TextStyle(fontSize: 14, color: Colors.white70), 
+                          ),
+                          Text(
+                            events[eventIndex].eventLocation ?? 'No location set',
+                            style: const TextStyle(fontSize: 14, color: Colors.white70),
                           ),
                         ],
                       ),
@@ -343,8 +344,22 @@ class _NewEventPageState extends State<NewEventPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // Blue color for "Event Name" button
                   ),
-                  onPressed: () {
-                    // Code to handle adding event name
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return EventName(
+                            updateEventNameCallback: widget.updateEventNameCallback,
+                          );
+                        },
+                      ),
+                    );
+                    // Allows you to navigate back to same instance of page you left
+                    Navigator.pushNamed(
+                      context,
+                      '/newEventPage',
+                    );
                   },
                   child: Text('Event Name'),
                 ),
@@ -427,7 +442,7 @@ class _NewEventPageState extends State<NewEventPage> {
               text: TextSpan(
                 children: [
                   const TextSpan(
-                    text: 'Selected Event Name: ', // Bold text
+                    text: 'Event Name: ', // Bold text
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -450,7 +465,7 @@ class _NewEventPageState extends State<NewEventPage> {
               text: TextSpan(
                 children: [
                   const TextSpan(
-                    text: 'Selected Time/Date: ', // Bold text
+                    text: 'Time/Date: ', // Bold text
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -473,7 +488,7 @@ class _NewEventPageState extends State<NewEventPage> {
               text: TextSpan(
                 children: [
                   const TextSpan(
-                    text: 'Selected Location: ', // Bold text
+                    text: 'Location: ', // Bold text
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
