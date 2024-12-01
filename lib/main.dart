@@ -345,7 +345,15 @@ class _NewEventPageState extends State<NewEventPage> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Blue color for "Event Name" button
+                    fixedSize: Size(250, 250),
+                    backgroundColor: Color.fromARGB(255,47,201,242), // Blue color for "Event Name" button
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 21,113,138),
+                      width: 3.0,
+                    ),
+                  ),
                   ),
                   onPressed: () async {
                     await Navigator.push(
@@ -364,11 +372,27 @@ class _NewEventPageState extends State<NewEventPage> {
                       '/newEventPage',
                     );
                   },
-                  child: Text('Event Name'),
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.event, size: 160, color: Colors.white), // Icon for Event Name
+                    SizedBox(height: 5),
+                    Text('Event Name', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
+                    ),
+                  ],
                 ),
+              ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Green color for "Time/Date" button
+                    fixedSize: Size(250, 250),
+                    backgroundColor: Color.fromARGB(255, 150, 245, 124),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 17, 149, 53),
+                      width: 3.0,
+                    ),
+                  ),
                   ),
                   onPressed: () async {
                     await Navigator.push(
@@ -388,11 +412,27 @@ class _NewEventPageState extends State<NewEventPage> {
                       '/newEventPage',
                     );
                   },
-                  child: Text('Time/Date'),
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.access_time_rounded, size: 160, color: Colors.white),
+                    SizedBox(height: 5),
+                    Text('Time/Date', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
+                    ),
+                  ],
+                ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Red color for "Location" button
+                    fixedSize: Size(250, 250),
+                    backgroundColor: Color.fromARGB(255,242,72,36),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255,144,34,11),
+                      width: 3.0,
+                    ),
+                  ),
                   ),
                   onPressed: () async {
                     await Navigator.push(
@@ -411,7 +451,15 @@ class _NewEventPageState extends State<NewEventPage> {
                       '/newEventPage',
                     );
                   },
-                  child: Text('Location'),
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.location_pin, size: 160, color: Colors.white),
+                    SizedBox(height: 5),
+                    Text('Location', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
+                    ),
+                  ],
+                ),
                 ),
               ],
             ),
@@ -539,6 +587,7 @@ class EditEventPage extends StatelessWidget {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // Blue color for "Event Name" button
+                    fixedSize: Size(80, 80), // Square size
                   ),
                   onPressed: () {
                     // Code to edit the event name
