@@ -196,9 +196,26 @@ class _EventListPageState extends State<EventListPage> {
                   child: Container(
                     margin: EdgeInsets.all(8.0),
                     height: 60,
-                    color: Colors.grey[300],
+                    decoration: BoxDecoration(
+                      color: Color(0xFFB57BD5), // Rectangle color
+                      border: Border.all(
+                        color: Color(0xFF560A7E), // Border color
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0), // Optional: add some border radius
+                    ),
                     child: Center(
-                      child: Icon(Icons.add, color: Colors.black, size: 32),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white, // Circle color
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(Icons.add, color: Colors.black, size: 32),
+                        ),
+                      ),
                     ),
                   ),
                 );
