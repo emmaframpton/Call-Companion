@@ -228,13 +228,39 @@ class _EventListPageState extends State<EventListPage> {
                     final editedEvent = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditEventPage(
-                          event: events[eventIndex],
+                        builder: (context) => NewEventPage(
+                          addEventCallback: (newEvent) {
+                            setState(() {
+                              events[eventIndex] = newEvent;
+                            });
+                          },
+                          updateEventNameCallback: (newName) {
+                            setState(() {
+                              events[eventIndex].eventName = newName;
+                            });
+                          },
+                          updateTimeDateCallback: (newTimeDate) {
+                            setState(() {
+                              events[eventIndex].eventTimeDate = newTimeDate;
+                            });
+                          },
+                          updateLocationCallback: (newLocation) {
+                            setState(() {
+                              events[eventIndex].eventLocation = newLocation;
+                            });
+                          },
+                          events: events,
+                          eventName: events[eventIndex].eventName ?? "Untitled Event",
+                          timeDate: events[eventIndex].eventTimeDate ?? "No date selected",
+                          location: events[eventIndex].eventLocation ?? "No location selected",
                         ),
                       ),
                     );
+
                     if (editedEvent != null) {
-                      editEvent(eventIndex, editedEvent);
+                      setState(() {
+                        events[eventIndex] = editedEvent;
+                      });
                     }
                   },
                   child: Container(
@@ -250,23 +276,37 @@ class _EventListPageState extends State<EventListPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
+                      child: Row( 
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            events[eventIndex].eventName ?? "Untitled Event",
-                            style: const TextStyle(fontSize: 18, color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
+                        Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              events[eventIndex].eventName ?? "Untitled Event",
+                              style: const TextStyle(fontSize: 18, color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              events[eventIndex].eventTimeDate ?? 'No time/date set',
+                              style: const TextStyle(fontSize: 14, color: Colors.white70), 
+                            ),
+                            Text(
+                              events[eventIndex].eventLocation ?? 'No location set',
+                              style: const TextStyle(fontSize: 14, color: Colors.white70),
+                            ),
+                          ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            events[eventIndex].eventTimeDate ?? 'No time/date set',
-                            style: const TextStyle(fontSize: 14, color: Colors.white70), 
-                          ),
-                          Text(
-                            events[eventIndex].eventLocation ?? 'No location set',
-                            style: const TextStyle(fontSize: 14, color: Colors.white70),
-                          ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.white, size: 50),
+                          onPressed: () {
+                            setState(() {
+                              events.removeAt(eventIndex); // Remove the event from the list
+                            });
+                          },
+                        ),
                         ],
                       ),
                     ),
@@ -347,7 +387,7 @@ class _NewEventPageState extends State<NewEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('New Event')),
+      appBar: AppBar(title: Text('Event Edit')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -581,10 +621,32 @@ class _NewEventPageState extends State<NewEventPage> {
   }
 }
 
-class EditEventPage extends StatelessWidget {
-  final TextEditingController controller;
-  EditEventPage({required Event event}) : controller = TextEditingController(text: event.eventName);
-  
+class EditEventPage extends StatefulWidget {
+  final Event event;
+  final Function(Event) updateEventCallback;
+
+  EditEventPage({
+    required this.event,
+    required this.updateEventCallback,
+  });
+
+  @override
+  _EditEventPageState createState() => _EditEventPageState();
+}
+
+class _EditEventPageState extends State<EditEventPage> {
+  late TextEditingController nameController;
+  late TextEditingController timeDateController;
+  late TextEditingController locationController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.event.eventName);
+    timeDateController = TextEditingController(text: widget.event.eventTimeDate);
+    locationController = TextEditingController(text: widget.event.eventLocation);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -594,96 +656,31 @@ class EditEventPage extends StatelessWidget {
         child: Column(
           children: [
             TextField(
-              controller: controller,
-              decoration: InputDecoration(labelText: 'Edit Event Name'),
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Event Name'),
             ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255,47,201,242), // Blue color for "Event Name" button
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 21,113,138),
-                      width: 3.0,
-                    ),
-                  ),
-                  ),
-                  onPressed: () {
-                    // Code to edit the event name
-                  },
-                  child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.event, size: 160, color: Colors.white), // Icon for Event Name
-                    SizedBox(height: 5),
-                    Text('Event Name', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
-                    ),
-                  ],
-                ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255, 150, 245, 124),
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
-                      width: 3.0,
-                    ),
-                    ),
-                  ),
-                  onPressed: () {
-                    // Code to edit the time/date
-                  },
-                  child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.access_time_rounded, size: 160, color: Colors.white),
-                    SizedBox(height: 5),
-                    Text('Time/Date', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
-                    ),
-                  ],
-                ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255,242,72,36),
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255,144,34,11),
-                      width: 3.0,
-                    ),
-                  ),
-                  ),
-                  onPressed: () {
-                    // Code to edit the location
-                  },
-                  child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.location_pin, size: 160, color: Colors.white),
-                    SizedBox(height: 5),
-                    Text('Location', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), 
-                    ),
-                  ],
-                ),
-                ),
-              ],
+            SizedBox(height: 16),
+            TextField(
+              controller: timeDateController,
+              decoration: InputDecoration(labelText: 'Time/Date'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
+            TextField(
+              controller: locationController,
+              decoration: InputDecoration(labelText: 'Location'),
+            ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                Navigator.popUntil(context, (route) {
-                  return route.settings.name == '/eventList';
-                });
+                // Update the event and pass it back to the event list
+                final updatedEvent = Event(
+                  eventName: nameController.text,
+                  eventTimeDate: timeDateController.text,
+                  eventLocation: locationController.text,
+                );
+
+                widget.updateEventCallback(updatedEvent);
+                Navigator.pop(context, updatedEvent);
               },
               child: Text('Save Changes'),
             ),
@@ -693,3 +690,14 @@ class EditEventPage extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
