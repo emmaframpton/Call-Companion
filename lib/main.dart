@@ -392,11 +392,6 @@ class _NewEventPageState extends State<NewEventPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(labelText: 'Event Name'),
-            ),
-            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
