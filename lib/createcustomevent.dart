@@ -19,7 +19,20 @@ class _CreateCustomEventState extends State<CreateCustomEvent> {
     Icons.local_hospital,
     Icons.add_circle,
     Icons.calendar_today,
+    Icons.access_alarm,
+    Icons.accessibility,
+    Icons.healing,
+    Icons.phonelink_ring,
+    Icons.nordic_walking,
+    Icons.spa,
+    Icons.schedule,
+    Icons.favorite,
+    Icons.notifications,
+    Icons.alarm,
+    Icons.assignment_turned_in,
+    Icons.book_online,
   ];
+
 
   @override
   Widget build(BuildContext context) {
