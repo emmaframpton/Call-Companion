@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'createcustomevent.dart';
+import 'createcustomevent.dart'; // Import the custom event creation page
 
 class EventName extends StatefulWidget {
   final Function(String) updateEventNameCallback;
@@ -12,22 +12,13 @@ class EventName extends StatefulWidget {
 }
 
 class EventNameState extends State<EventName> {
-  final List<String> eventNames = [
-    "Doctor's Appointment",
-    "Dentist Appointment",
-    "Physical Therapy (PT)",
-    "Occupational Therapy (OT)",
-    "Meeting",
-    "Hangout"
-  ];
-
-  final List<IconData> eventIcons = [
-    Icons.medical_services,
-    Icons.face,
-    Icons.fitness_center,
-    Icons.work,
-    Icons.group,
-    Icons.coffee,
+  final List<Map<String, dynamic>> eventData = [
+    {"name": "Doctor's Appointment", "icon": Icons.medical_services},
+    {"name": "Dentist Appointment", "icon": Icons.face},
+    {"name": "Physical Therapy (PT)", "icon": Icons.fitness_center},
+    {"name": "Occupational Therapy (OT)", "icon": Icons.work},
+    {"name": "Meeting", "icon": Icons.group},
+    {"name": "Hangout", "icon": Icons.coffee},
   ];
 
   @override
@@ -64,11 +55,11 @@ class EventNameState extends State<EventName> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: eventNames.length,
+                itemCount: eventData.length,
                 itemBuilder: (context, index) {
                   return ElevatedButton(
                     onPressed: () async {
-                      widget.updateEventNameCallback(eventNames[index]);
+                      widget.updateEventNameCallback(eventData[index]['name']);
                       Navigator.popUntil(context, (route) {
                         return route.settings.name == '/newEventPage';
                       });
@@ -87,12 +78,12 @@ class EventNameState extends State<EventName> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          eventIcons[index],
+                          eventData[index]['icon'],
                           size: 40,
                           color: Colors.white,
                         ),
                         Text(
-                          eventNames[index],
+                          eventData[index]['name'],
                           style: TextStyle(
                             fontSize: fontSize,
                             color: Colors.white,
@@ -109,22 +100,25 @@ class EventNameState extends State<EventName> {
             ElevatedButton(
               onPressed: () async {
                 // Navigate to the custom event creation page
-                String customEventName = await Navigator.push(
+                final Map<String, dynamic> newEvent = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CreateCustomEvent(),
                   ),
                 );
 
-                if (customEventName.isNotEmpty) {
-                  widget.updateEventNameCallback(customEventName);
+                if (newEvent != null && newEvent['name'].isNotEmpty && newEvent['icon'] != null) {
+                  setState(() {
+                    eventData.add(newEvent); // Add the new event to the list
+                  });
+                  widget.updateEventNameCallback(newEvent['name']);
                   Navigator.popUntil(context, (route) {
                     return route.settings.name == '/newEventPage';
                   });
                 }
               },
               style: ElevatedButton.styleFrom(
-                fixedSize: Size(250, 80),
+                fixedSize: Size(250, 80), // Same size as other buttons
                 backgroundColor: Color.fromARGB(255, 47, 201, 242),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
