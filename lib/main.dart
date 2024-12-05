@@ -204,6 +204,15 @@ DateTime parseEventTime(String eventTimeString) {
   return localParsedDate;
 }
 
+void showReminderDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ReminderSelectionDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,10 +315,26 @@ DateTime parseEventTime(String eventTimeString) {
                               ],
                             ),
                           ),
-
-                          // IconButton positioned to the right
+                          // Reminders Button
                           IconButton(
-                            icon: Icon(Icons.calendar_today, color: Colors.white),
+                            icon: Container(
+                            child: const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                              size: 60,  // Set icon size
+                              ),
+                            ) ,
+                            onPressed: () {
+                              showReminderDialog(context);
+                            },
+                          ),
+                          // Calendar Button
+                          IconButton(
+                            icon: Image.asset(
+                              'assets/images/gcalicon.png', 
+                              width: 60, 
+                              height: 60,
+                            ),
                             onPressed: () {
                               DateTime parsedEventTime = parseEventTime(events[eventIndex].eventTimeDate!);
 
@@ -649,6 +674,58 @@ class EditEventPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ReminderSelectionDialog extends StatefulWidget {
+  @override
+  _ReminderSelectionDialogState createState() =>
+      _ReminderSelectionDialogState();
+}
+
+class _ReminderSelectionDialogState extends State<ReminderSelectionDialog> {
+  final List<int> reminderOptions = [120, 60, 30, 10]; 
+  final Map<int, bool> selectedReminders = {
+    120: false,
+    60: false,
+    30: false,
+    10: false,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Select Reminders"),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: reminderOptions.map((option) {
+            return CheckboxListTile(
+              title: Text("$option minutes before"),
+              value: selectedReminders[option],
+              onChanged: (bool? value) {
+                setState(() {
+                  selectedReminders[option] = value!;
+                });
+              },
+            );
+          }).toList(),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); 
+          },
+          child: Text("Set Reminders"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); 
+          },
+          child: Text("Cancel"),
+        ),
+      ],
     );
   }
 }
