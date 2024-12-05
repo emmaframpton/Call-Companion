@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart'; 
 import 'timedate.dart';
 import 'location.dart';
 import 'eventname.dart';
@@ -155,6 +157,53 @@ class _EventListPageState extends State<EventListPage> {
     );
   }
 
+void addEventToGoogleCalendar(String title, String description, String location, DateTime startTime, DateTime endTime) {
+  final Uri googleCalendarUrl = Uri(
+    scheme: 'https',
+    host: 'calendar.google.com',
+    path: '/calendar/render',
+    queryParameters: {
+      'action': 'TEMPLATE',
+      'text': title,
+      'dates': '${_formatDate(startTime)}/${_formatDate(endTime)}',
+      'details': description,
+      'location': location,
+    },
+  );
+  _launchUrl(googleCalendarUrl);
+}
+
+String _formatDate(DateTime dateTime) {
+  // Format the date as local time (without converting to UTC)
+  return dateTime.toIso8601String().replaceAll('-', '').replaceAll(':', '').split('.').first;
+}
+
+ void _launchUrl(Uri url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+DateTime parseEventTime(String eventTimeString) {
+
+  int currentYear = DateTime.now().year;
+
+  DateFormat format = DateFormat('MMM d, h:mm a');
+  DateTime parsedDate = format.parse(eventTimeString);
+
+  DateTime localParsedDate = DateTime(
+    currentYear,
+    parsedDate.month,
+    parsedDate.day,
+    parsedDate.hour,
+    parsedDate.minute,
+  );
+
+  return localParsedDate;
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,26 +282,49 @@ class _EventListPageState extends State<EventListPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Text(
-                            events[eventIndex].eventName ?? "Untitled Event",
-                            style: const TextStyle(fontSize: 18, color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
+                          // Event details inside an Expanded widget
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  events[eventIndex].eventName ?? "Untitled Event",
+                                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  events[eventIndex].eventTimeDate ?? 'No time/date set',
+                                  style: const TextStyle(fontSize: 14, color: Colors.white70),
+                                ),
+                                Text(
+                                  events[eventIndex].eventLocation ?? 'No location set',
+                                  style: const TextStyle(fontSize: 14, color: Colors.white70),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            events[eventIndex].eventTimeDate ?? 'No time/date set',
-                            style: const TextStyle(fontSize: 14, color: Colors.white70), 
-                          ),
-                          Text(
-                            events[eventIndex].eventLocation ?? 'No location set',
-                            style: const TextStyle(fontSize: 14, color: Colors.white70),
+
+                          // IconButton positioned to the right
+                          IconButton(
+                            icon: Icon(Icons.calendar_today, color: Colors.white),
+                            onPressed: () {
+                              DateTime parsedEventTime = parseEventTime(events[eventIndex].eventTimeDate!);
+
+                              addEventToGoogleCalendar(
+                                events[eventIndex].eventName ?? "Untitled Event",
+                                "Add description here",
+                                events[eventIndex].eventLocation ?? "No location",
+                                parsedEventTime, 
+                                parsedEventTime.add(Duration(hours: 1)),
+                              );
+                            },
                           ),
                         ],
                       ),
-                    ),
+                    ),           
                   ),
                 );
               }
