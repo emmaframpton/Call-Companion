@@ -189,12 +189,15 @@ String _formatDate(DateTime dateTime) {
 DateTime parseEventTime(String eventTimeString) {
 
   int currentYear = DateTime.now().year;
+  int currentMonth = DateTime.now().month;
 
   DateFormat format = DateFormat('MMM d, h:mm a');
   DateTime parsedDate = format.parse(eventTimeString);
 
+  int yearToUse = (parsedDate.month < currentMonth) ? currentYear + 1 : currentYear;
+
   DateTime localParsedDate = DateTime(
-    currentYear,
+    yearToUse,
     parsedDate.month,
     parsedDate.day,
     parsedDate.hour,
