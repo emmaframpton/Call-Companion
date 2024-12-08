@@ -119,40 +119,48 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage> {
   List<Event> events = [];
+  List<Event> filteredEvents = [];
+  final TextEditingController searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    events = widget.events ?? []; // Initialize events to an empty list if null
+    events = widget.events ?? [];
+    filteredEvents = events; // Initially, show all events
+    searchController.addListener(_filterEvents); // Listen to changes in the search input
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _filterEvents() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredEvents = events.where((event) {
+        return (event.eventName?.toLowerCase().contains(query) ?? false) ||
+               (event.eventTimeDate?.toLowerCase().contains(query) ?? false) ||
+               (event.eventLocation?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    });
   }
 
   void addEvent(Event event) {
     setState(() {
       events.add(event);
+      _filterEvents(); // Re-filter after adding a new event
     });
   }
 
   void editEvent(int index, Event newEvent) {
     setState(() {
       events[index] = newEvent;
+      _filterEvents(); // Re-filter after editing an event
     });
-  }
-
-  void scrollUp() {
-    _scrollController.animateTo(
-      _scrollController.offset - 120, // Scroll up by 100 pixels
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.offset + 120, // Scroll down by 100 pixels
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
   }
 
   @override
@@ -160,179 +168,167 @@ class _EventListPageState extends State<EventListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Event List'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search events...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
       body: Stack(
         children: [
           ListView.builder(
             controller: _scrollController,
-            itemCount: events.length + 1, // Extra item for the "+" button
+            itemCount: filteredEvents.length + 1, // Include "+" button
             itemBuilder: (context, index) {
               if (index == 0) {
-                // The "+" button
-                return InkWell(
-                  onTap: () async {
-                    widget.updateEventNameCallback("Untitled Event");
-                    widget.updateTimeDateCallback("No date selected");
-                    widget.updateLocationCallback("No location selected");
-                    final newEvent = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewEventPage(
-                          addEventCallback: widget.addEventCallback, // allows NewEventPage to add events to the existing list
-                          updateEventNameCallback: widget.updateEventNameCallback,
-                          updateTimeDateCallback: widget.updateTimeDateCallback,
-                          updateLocationCallback: widget.updateLocationCallback,
-                          events: widget.events,
-                          eventName: "Untitled Event",
-                          timeDate: "No date selected",
-                          location: "No location selected",
-                        ),                        
-                      ),                    
-                    );
-                    if (newEvent != null) {
-                      widget.addEventCallback(newEvent);  // Call the callback function to add the event
-                    } 
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(8.0),
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFB57BD5),
-                      border: Border.all(
-                        color: Color(0xFF560A7E), 
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Center(
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add, color: Colors.black, size: 32),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return _buildAddEventButton(context);
               } else {
-                // List of events with updated color and border
-                // I haven't implemented anything with editing the event!
                 final eventIndex = index - 1;
-                return InkWell(
-                  onTap: () async {
-                    final editedEvent = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewEventPage(
-                          addEventCallback: (newEvent) {
-                            setState(() {
-                              events[eventIndex] = newEvent;
-                            });
-                          },
-                          updateEventNameCallback: (newName) {
-                            setState(() {
-                              events[eventIndex].eventName = newName;
-                            });
-                          },
-                          updateTimeDateCallback: (newTimeDate) {
-                            setState(() {
-                              events[eventIndex].eventTimeDate = newTimeDate;
-                            });
-                          },
-                          updateLocationCallback: (newLocation) {
-                            setState(() {
-                              events[eventIndex].eventLocation = newLocation;
-                            });
-                          },
-                          events: events,
-                          eventName: events[eventIndex].eventName ?? "Untitled Event",
-                          timeDate: events[eventIndex].eventTimeDate ?? "No date selected",
-                          location: events[eventIndex].eventLocation ?? "No location selected",
-                        ),
-                      ),
-                    );
-
-                    if (editedEvent != null) {
-                      setState(() {
-                        events[eventIndex] = editedEvent;
-                      });
-                    }
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(8.0),
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFB57BD5), // Rectangle color
-                      border: Border.all(
-                        color: Color(0xFF560A7E), // Border color
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row( 
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              events[eventIndex].eventName ?? "Untitled Event",
-                              style: const TextStyle(fontSize: 18, color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              events[eventIndex].eventTimeDate ?? 'No time/date set',
-                              style: const TextStyle(fontSize: 14, color: Colors.white70), 
-                            ),
-                            Text(
-                              events[eventIndex].eventLocation ?? 'No location set',
-                              style: const TextStyle(fontSize: 14, color: Colors.white70),
-                            ),
-                          ],
-                          ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.white, size: 50),
-                          onPressed: () {
-                            setState(() {
-                              events.removeAt(eventIndex); // Remove the event from the list
-                            });
-                          },
-                        ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                return _buildEventCard(context, eventIndex);
               }
             },
           ),
-          Positioned(
-            right: 16,
-            bottom: 100,
-            child: Column(
+          _buildScrollButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddEventButton(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        widget.updateEventNameCallback("Untitled Event");
+        widget.updateTimeDateCallback("No date selected");
+        widget.updateLocationCallback("No location selected");
+        final newEvent = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewEventPage(
+              addEventCallback: widget.addEventCallback,
+              updateEventNameCallback: widget.updateEventNameCallback,
+              updateTimeDateCallback: widget.updateTimeDateCallback,
+              updateLocationCallback: widget.updateLocationCallback,
+              events: widget.events,
+              eventName: "Untitled Event",
+              timeDate: "No date selected",
+              location: "No location selected",
+            ),
+          ),
+        );
+        if (newEvent != null) {
+          widget.addEventCallback(newEvent);
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.all(8.0),
+        height: 60,
+        decoration: BoxDecoration(
+          color: Color(0xFFB57BD5),
+          border: Border.all(
+            color: Color(0xFF560A7E),
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Center(
+          child: Icon(Icons.add, color: Colors.white, size: 32),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventCard(BuildContext context, int eventIndex) {
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      height: 100,
+      decoration: BoxDecoration(
+        color: Color(0xFFB57BD5),
+        border: Border.all(
+          color: Color(0xFF560A7E),
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FloatingActionButton(
-                  onPressed: scrollUp,
-                  child: Icon(Icons.arrow_upward),
-                  mini: true,
+                Text(
+                  filteredEvents[eventIndex].eventName ?? "Untitled Event",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
-                SizedBox(height: 8),
-                FloatingActionButton(
-                  onPressed: scrollDown,
-                  child: Icon(Icons.arrow_downward),
-                  mini: true,
+                SizedBox(height: 4),
+                Text(
+                  filteredEvents[eventIndex].eventTimeDate ?? 'No time/date set',
+                  style: TextStyle(fontSize: 14, color: Colors.white70),
+                ),
+                Text(
+                  filteredEvents[eventIndex].eventLocation ?? 'No location set',
+                  style: TextStyle(fontSize: 14, color: Colors.white70),
                 ),
               ],
             ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  events.removeAt(eventIndex);
+                  _filterEvents();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScrollButtons() {
+    return Positioned(
+      right: 16,
+      bottom: 100,
+      child: Column(
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.offset - 120,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: Icon(Icons.arrow_upward),
+            mini: true,
+          ),
+          SizedBox(height: 8),
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.offset + 120,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: Icon(Icons.arrow_downward),
+            mini: true,
           ),
         ],
       ),
