@@ -137,7 +137,7 @@ class _EventListPageState extends State<EventListPage> {
   }
 
   void _loadEvents() async {
-    await Future.delayed(Duration(milliseconds: 2200 ));
+    await Future.delayed(Duration(milliseconds: 1800 ));
     
     setState(() {
       _isInitialLoading = false; // Set to false once loading is complete
@@ -316,7 +316,7 @@ void showReminderDialog(BuildContext context) {
         decoration: BoxDecoration(
           color: Color.fromARGB(	255,	86,	10,	120),
           border: Border.all(
-            color: Color.fromARGB(	255,181,	123,	213),
+            color: Color.fromARGB(	255,	86,	10,	120),
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(8.0),
@@ -333,9 +333,9 @@ void showReminderDialog(BuildContext context) {
       margin: EdgeInsets.all(8.0),
       height: 100,
       decoration: BoxDecoration(
-        color: Color.fromRGBO(	86,	10,	126, 100),
+        color: Color.fromARGB(	255,	86,	10,	120),
         border: Border.all(
-          color: Color.fromRGBO(	181,	123,	213, 100),
+          color: Color.fromARGB(	255,	86,	10,	120),
           width: 2.0,
         ),
         borderRadius: BorderRadius.circular(8.0),
@@ -643,7 +643,24 @@ class _NewEventPageState extends State<NewEventPage> {
                   ),
                 );
               },
-              child: Text('Add Event'),
+              child: Container(
+                width: 120,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(	255,	86,	10,	120),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Center(
+                  child: Text(
+                    'Add Event',
+                    style: TextStyle(
+                      color: Colors.white, // White text
+                      fontSize: 20, // Bigger text size
+                      fontWeight: FontWeight.bold, // Bold text
+                    ),
+                  ),
+                ),
+              ),
             ),
           SizedBox(height: 20),
           RichText(
