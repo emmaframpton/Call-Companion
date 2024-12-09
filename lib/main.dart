@@ -298,9 +298,9 @@ void showReminderDialog(BuildContext context) {
         margin: EdgeInsets.all(8.0),
         height: 60,
         decoration: BoxDecoration(
-          color: Color(0xFFB57BD5),
+          color: Color.fromARGB(	255,	86,	10,	120),
           border: Border.all(
-            color: Color(0xFF560A7E),
+            color: Color.fromARGB(	255,181,	123,	213),
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(8.0),
@@ -317,9 +317,9 @@ void showReminderDialog(BuildContext context) {
       margin: EdgeInsets.all(8.0),
       height: 100,
       decoration: BoxDecoration(
-        color: Color(0xFFB57BD5),
+        color: Color.fromRGBO(	86,	10,	126, 100),
         border: Border.all(
-          color: Color(0xFF560A7E),
+          color: Color.fromRGBO(	181,	123,	213, 100),
           width: 2.0,
         ),
         borderRadius: BorderRadius.circular(8.0),
@@ -487,11 +487,11 @@ class _NewEventPageState extends State<NewEventPage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255,47,201,242), // Blue color for "Event Name" button
+                    backgroundColor: Color.fromARGB(255,65,	63,	180), // Blue color for "Event Name" button
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
-                      color: Color.fromARGB(255, 21,113,138),
+                      color: Color.fromARGB(255,42,	41,	102),
                       width: 3.0,
                     ),
                   ),
@@ -526,11 +526,11 @@ class _NewEventPageState extends State<NewEventPage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255, 150, 245, 124),
+                    backgroundColor: Color.fromARGB(255,	18,	99,	33),
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
-                      color: Color.fromARGB(255, 17, 149, 53),
+                      color: Color.fromARGB(255,8,	55,	20),
                       width: 3.0,
                     ),
                   ),
@@ -566,11 +566,11 @@ class _NewEventPageState extends State<NewEventPage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(250, 250),
-                    backgroundColor: Color.fromARGB(255,242,72,36),
+                    backgroundColor: Color.fromARGB(255,	164	,10	,10),
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: const BorderSide(
-                      color: Color.fromARGB(255,144,34,11),
+                      color: Color.fromARGB(255,	91,	6	,6),
                       width: 3.0,
                     ),
                   ),

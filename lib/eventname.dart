@@ -65,11 +65,11 @@ class EventNameState extends State<EventName> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 47, 201, 242),
+                      backgroundColor: Color.fromARGB(255,65,	63,	180),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                         side: const BorderSide(
-                          color: Color.fromARGB(255, 21, 113, 138),
+                          color: Color.fromARGB(255,42,	41,	102),
                           width: 3.0,
                         ),
                       ),
@@ -119,11 +119,11 @@ class EventNameState extends State<EventName> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(250, 80), // Same size as other buttons
-                backgroundColor: Color.fromARGB(255, 47, 201, 242),
+                backgroundColor: Color.fromARGB(255,65,	63,	180),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: const BorderSide(
-                    color: Color.fromARGB(255, 21, 113, 138),
+                    color: Color.fromARGB(255,42,	41,	102),
                     width: 3.0,
                   ),
                 ),

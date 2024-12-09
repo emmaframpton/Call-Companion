@@ -116,11 +116,11 @@ class LocationState extends State<Location> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255,242,72,36),
+                      backgroundColor: Color.fromARGB(255,	164	,10	,10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                         side: const BorderSide(
-                          color: Color.fromARGB(255,144,34,11),
+                          color: Color.fromARGB(255,	91,	6	,6),
                           width: 3.0,
                         ),
                       ),
@@ -146,7 +146,7 @@ class LocationState extends State<Location> {
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255,242,72,36),
+                backgroundColor: Color.fromARGB(255,	164	,10	,10),
               ),
               onPressed: () {
                 final customLocation = controller.text.trim();
