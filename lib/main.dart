@@ -125,12 +125,23 @@ class _EventListPageState extends State<EventListPage> {
   final TextEditingController searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  @override
+  bool _isInitialLoading = true; // Flag to track initial loading state
+
+ @override
   void initState() {
     super.initState();
     events = widget.events ?? [];
     filteredEvents = events; // Initially, show all events
     searchController.addListener(_filterEvents); // Listen to changes in the search input
+    _loadEvents();
+  }
+
+  void _loadEvents() async {
+    await Future.delayed(Duration(milliseconds: 2200 ));
+    
+    setState(() {
+      _isInitialLoading = false; // Set to false once loading is complete
+    });
   }
 
   @override
@@ -227,7 +238,7 @@ void showReminderDialog(BuildContext context) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: _isInitialLoading ? null : AppBar(
         title: Text('Event List'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
@@ -249,22 +260,27 @@ void showReminderDialog(BuildContext context) {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          ListView.builder(
-            controller: _scrollController,
-            itemCount: filteredEvents.length + 1, // Include "+" button
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return _buildAddEventButton(context);
-              } else {
-                final eventIndex = index - 1;
-                return _buildEventCard(context, eventIndex);
-              }
-            },
-          ),
-          _buildScrollButtons(),
-        ],
+      body:  _isInitialLoading
+          ? Container(
+              color: Colors.white, // White background for the entire screen during loading
+              child: LoadingScreen(), // Show loading GIF in the center
+            )
+          : Stack(
+              children: [
+                ListView.builder(
+                  controller: _scrollController,
+                  itemCount: filteredEvents.length + 1, // Include "+" button
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _buildAddEventButton(context);
+                    } else {
+                      final eventIndex = index - 1;
+                      return _buildEventCard(context, eventIndex);
+                    }
+                  },
+                ),
+                _buildScrollButtons(),
+              ],
       ),
     );
   }
@@ -823,6 +839,14 @@ class _ReminderSelectionDialogState extends State<ReminderSelectionDialog> {
           child: Text("Cancel"),
         ),
       ],
+    );
+  }
+}
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.asset('assets/images/loading.gif'), // Display the GIF from the assets folder
     );
   }
 }
