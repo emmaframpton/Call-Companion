@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart'; 
 import 'timedate.dart';
 import 'location.dart';
 import 'eventname.dart';
@@ -163,6 +165,65 @@ class _EventListPageState extends State<EventListPage> {
     });
   }
 
+void addEventToGoogleCalendar(String title, String description, String location, DateTime startTime, DateTime endTime) {
+  final Uri googleCalendarUrl = Uri(
+    scheme: 'https',
+    host: 'calendar.google.com',
+    path: '/calendar/render',
+    queryParameters: {
+      'action': 'TEMPLATE',
+      'text': title,
+      'dates': '${_formatDate(startTime)}/${_formatDate(endTime)}',
+      'details': description,
+      'location': location,
+    },
+  );
+  _launchUrl(googleCalendarUrl);
+}
+
+String _formatDate(DateTime dateTime) {
+  // Format the date as local time (without converting to UTC)
+  return dateTime.toIso8601String().replaceAll('-', '').replaceAll(':', '').split('.').first;
+}
+
+ void _launchUrl(Uri url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+DateTime parseEventTime(String eventTimeString) {
+
+  int currentYear = DateTime.now().year;
+  int currentMonth = DateTime.now().month;
+
+  DateFormat format = DateFormat('MMM d, h:mm a');
+  DateTime parsedDate = format.parse(eventTimeString);
+
+  int yearToUse = (parsedDate.month < currentMonth) ? currentYear + 1 : currentYear;
+
+  DateTime localParsedDate = DateTime(
+    yearToUse,
+    parsedDate.month,
+    parsedDate.day,
+    parsedDate.hour,
+    parsedDate.minute,
+  );
+
+  return localParsedDate;
+}
+
+void showReminderDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ReminderSelectionDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -282,9 +343,41 @@ class _EventListPageState extends State<EventListPage> {
                 Text(
                   filteredEvents[eventIndex].eventLocation ?? 'No location set',
                   style: TextStyle(fontSize: 14, color: Colors.white70),
-                ),
-              ],
-            ),
+                  ),
+                              ],
+                            ),
+                          // Reminders Button
+                          IconButton(
+                            icon: Container(
+                            child: const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                              size: 60,  // Set icon size
+                              ),
+                            ) ,
+                            onPressed: () {
+                              showReminderDialog(context);
+                            },
+                          ),
+                          // Calendar Button
+                          IconButton(
+                            icon: Image.asset(
+                              './assets/images/gcalicon.png', 
+                              width: 60, 
+                              height: 60,
+                            ),
+                            onPressed: () {
+                              DateTime parsedEventTime = parseEventTime(events[eventIndex].eventTimeDate!);
+
+                              addEventToGoogleCalendar(
+                                events[eventIndex].eventName ?? "Untitled Event",
+                                "Add description here",
+                                events[eventIndex].eventLocation ?? "No location",
+                                parsedEventTime, 
+                                parsedEventTime.add(Duration(hours: 1)),
+                              );
+                            },
+                          ),
             Spacer(),
             IconButton(
               icon: Icon(Icons.delete, color: Colors.white),
@@ -295,7 +388,7 @@ class _EventListPageState extends State<EventListPage> {
                 });
               },
             ),
-          ],
+            ],
         ),
       ),
     );
@@ -682,13 +775,54 @@ class _EditEventPageState extends State<EditEventPage> {
   }
 }
 
+class ReminderSelectionDialog extends StatefulWidget {
+  @override
+  _ReminderSelectionDialogState createState() =>
+      _ReminderSelectionDialogState();
+}
 
+class _ReminderSelectionDialogState extends State<ReminderSelectionDialog> {
+  final List<int> reminderOptions = [120, 60, 30, 10]; 
+  final Map<int, bool> selectedReminders = {
+    120: false,
+    60: false,
+    30: false,
+    10: false,
+  };
 
-
-
-
-
-
-
-
-
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Select Reminders"),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: reminderOptions.map((option) {
+            return CheckboxListTile(
+              title: Text("$option minutes before"),
+              value: selectedReminders[option],
+              onChanged: (bool? value) {
+                setState(() {
+                  selectedReminders[option] = value!;
+                });
+              },
+            );
+          }).toList(),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); 
+          },
+          child: Text("Set Reminders"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); 
+          },
+          child: Text("Cancel"),
+        ),
+      ],
+    );
+  }
+}
